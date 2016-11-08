@@ -19,7 +19,7 @@ public class Jogador : NetworkBehaviour
 
 	[SyncVar] private int sinal;
 
-	[SyncVar] private SyncListFloat tempoVoltas = new SyncListFloat();
+	[SyncVar] internal SyncListFloat tempoVoltas = new SyncListFloat();
 
 	internal int idJogador;
 
@@ -80,7 +80,7 @@ public class Jogador : NetworkBehaviour
 		}
 		else
 		{
-			InvokeRepeating("CmdSimularVoltas", 10f, 5f);
+			InvokeRepeating("CmdSimularVoltas", 1f, 1.1f);
 		}
 	}
 
@@ -125,6 +125,8 @@ public class Jogador : NetworkBehaviour
 
 			melhorTempoText.text = string.Format("{0:00}:{1:00}:{2:00}", tempo.Minutes, tempo.Seconds, tempo.Milliseconds / 10);
 		}
+		else
+			melhorTempoText.text = "00:00:00";
 
 		voltasText.text = voltas + "/" + controladorJogo.voltasTotal;
 		concentracaoText.text = concentracao.ToString() + "%";
@@ -135,7 +137,10 @@ public class Jogador : NetworkBehaviour
 	void CmdContabilizarVolta(string s)
 	{
 		voltas = int.Parse(s);
-		
+
+		if (!controladorJogo.jogoIniciado)
+			return;
+
 		if (voltas > 0)
 		{
 			float tempoVolta = controladorJogo.tempoServidor - (voltas == 1 ? controladorJogo.tempoInicioCorrida : controladorJogo.tempoInicioCorrida + tempoVoltas[voltas - 2]);
@@ -150,7 +155,16 @@ public class Jogador : NetworkBehaviour
 		}
 
 		if (voltas == 0)
+		{
+			// Apenas durante os testes pois apenas um está no Arduíno
+			Jogador jogador2 = controladorJogo.jogadores[1].GetComponent<Jogador>();
+			jogador2.voltas = 0;
+			jogador2.tempoVoltas.Clear();
+			
+			tempoVoltas.Clear();
+
 			controladorJogo.IniciarCorrida();
+		}
 		else if (voltas == controladorJogo.voltasTotal)
 		{
 			if (controladorJogo.vencedorDeclarado)

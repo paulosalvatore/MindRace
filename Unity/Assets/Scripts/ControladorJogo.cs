@@ -9,7 +9,7 @@ using System.IO.Ports;
 public class ControladorJogo : NetworkBehaviour
 {
 	[Header("Jogadores")]
-	private GameObject[] jogadores;
+	internal GameObject[] jogadores;
 	public List<GameObject> canvasJogadores;
 
 	[Header("Corrida")]
