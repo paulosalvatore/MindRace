@@ -1,0 +1,81 @@
+Mono path[0] = 'C:/Users/paulo/Desktop/Testes Autorama/Build/Build_Data/Managed'
+Mono path[1] = 'C:/Users/paulo/Desktop/Testes Autorama/Build/Build_Data/Mono'
+Mono config path = 'C:/Users/paulo/Desktop/Testes Autorama/Build/Build_Data/Mono/etc'
+PlayerConnection initialized from C:/Users/paulo/Desktop/Testes Autorama/Build/Build_Data (debug = 0)
+PlayerConnection initialized network socket : 0.0.0.0 55485
+Multi-casting "[IP] 192.168.86.1 [Port] 55485 [Flags] 3 [Guid] 3001591367 [EditorId] 4193717852 [Version] 1048832 [Id] WindowsPlayer(PauloSalvatore) [Debug] 1" to [225.0.0.222:54997]...
+Waiting for connection from host on [192.168.86.1:55485]...
+Timed out. Continuing without host connection.
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56367
+PlayerConnection already initialized - listening to [192.168.86.1:55485]
+Initialize engine version: 5.4.0f3 (a6d8d714de6f)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce 930M (ID=0x1346)
+    Vendor:   NVIDIA
+    VRAM:     3072 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\Jayrock.dll (this message is harmless)
+Loading C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\Jayrock.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\Jayrock.Json.dll (this message is harmless)
+Loading C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\Jayrock.Json.dll into Unity Child Domain
+- Completed reload, in  0.071 seconds
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.249184 ms
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 2074 -> priority: 1 
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.522271 ms
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\System.Configuration.dll (this message is harmless)
+Platform assembly: C:\Users\paulo\Desktop\Testes Autorama\Build\Build_Data\Managed\System.Xml.dll (this message is harmless)
+System memory in use before: 20.3 MB.
+System memory in use after: 20.3 MB.
+
+Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 284.
+Total: 0.526617 ms (FindLiveObjects: 0.016197 ms CreateObjectMapping: 0.014617 ms MarkObjects: 0.488296 ms  DeleteObjects: 0.006320 ms)
+
+Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 10.773724 ms
+System memory in use before: 22.4 MB.
+System memory in use after: 22.4 MB.
+
+Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 219.
+Total: 0.783012 ms (FindLiveObjects: 0.024493 ms CreateObjectMapping: 0.017777 ms MarkObjects: 0.732444 ms  DeleteObjects: 0.007506 ms)
+
+Command function CmdAtualizarSinal called on server.
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:LogError(Object)
+Jogador:CallCmdAtualizarSinal(Int32)
+Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Testes Autorama\Assets\Scripts\Jogador.cs:171)
+TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Testes Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
+ 
+(Filename: C:/Users/paulo/Desktop/Testes Autorama/Assets/Scripts/Jogador.cs Line: 171)
+
+Command function CmdAtualizarAtencao called on server.
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:LogError(Object)
+Jogador:CallCmdAtualizarAtencao(Int32)
+Jogador:OnUpdateAtencao(Int32) (at C:\Users\paulo\Desktop\Testes Autorama\Assets\Scripts\Jogador.cs:192)
+TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Testes Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:96)
+ 
+(Filename: C:/Users/paulo/Desktop/Testes Autorama/Assets/Scripts/Jogador.cs Line: 192)
+
