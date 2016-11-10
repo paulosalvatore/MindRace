@@ -26,10 +26,19 @@ A corrida for iniciada;
 O número da volta conforme o sensor de voltas for alterado;
 A corrida for finalizada.
 
+- Caso nenhuma corrida esteja ativa, é possível iniciar o posicionamento automático dos carrinhos. Baseado em qual
+pista está selecionada (externa ou interna), ao pressionar o botão de posicionamento, o carrinho irá até o sensor,
+ficará parado por um pequeno período de tempo e iniciará o movimento novamente por um certo período de tempo até
+que pare na posição desejada.
+OBS.: Para ajustar a posição de parada, é necessário mexer na duração da energização da pista durante o posicionamento
+através da variável array duracaoPosicionamentoAutomatico[] - Sendo que o primeiro valor é da posição externa e o
+segundo é da posição interna. Também é possível mexer na velocidade do carrinho através da variável array
+valorPosicionamentoAutomatico que serve para ambas as pistas.
+
 
 LEDs DE CONTROLE
 
-Existem 5 LEDs que indicam o status de alguns componentes do circuito:
+Existem 8 LEDs que indicam o status de alguns componentes do circuito:
 
 - LED Verde - Status - Corrida Ativa
 Quando tiver uma corrida ativa, esse LED irá ficar aceso.
@@ -45,6 +54,14 @@ está acionado na pista.
 - LED Azul - Sensor - Estado do Sensor
 Enquanto o sensor estiver obtendo algum valor esse LED irá ficar aceso. Assim que o sensor parar de emitir
 sinal, o LED apagará. Enquanto o LED estiver ligado, não é possível contabilizar novas voltas na pista.
+- LED Amarelo - Posicionamento Automático
+Quando o botão de posicionamento automático for pressionado, o LED irá ficar aceso, caso contrário, ele ficará apagado.
+- LED Laranja - Pista Externa Selecionada
+Quando esse LED estiver aceso, significa que o arduino está programado para funcionar na pista externa, isso implicará
+apenas no posicionamento automático, onde os valores de duração da energização são diferentes para cada pista.
+- LED Amarelo - Pista Interna Selecionada
+Quando esse LED estiver aceso, significa que o arduino está programado para funcionar na pista interna, isso implicará
+apenas no posicionamento automático, onde os valores de duração da energização são diferentes para cada pista.
 
 */
 
@@ -54,7 +71,7 @@ SimpleTimer simpleTimer;
 
 int botaoInicio = A2;
 int chaveEmergencia = A1;
-int chaveSelecaoPista = 13; // A0 - 13 temporário enquanto não ajeita os pinos
+int chaveSelecaoPista = A0;
 int botaoPosicionamento = A3;
 
 int sensor = A4;
