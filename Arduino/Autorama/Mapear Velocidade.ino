@@ -1,6 +1,6 @@
 
-int botaoInicio = 6;
-int sensor = 5;
+int botaoInicio = A2;
+int sensor = A4;
 
 int pistaPositivo = 2;
 int pista = 3;
@@ -46,9 +46,30 @@ void IniciarMapeamento()
 	mapeamentoIniciado = true;
 	tempoInicio = tempoAtual;
 
-	digitalWrite(pistaPositivo, LOW);
-	digitalWrite(pistaNegativo, HIGH);
+	digitalWrite(pistaPositivo, HIGH);
+	digitalWrite(pistaNegativo, LOW);
 	analogWrite(pista, valorMapeamento);
+}
+
+void EncerrarMapeamento()
+{
+	mapeamentoIniciado = false;
+
+	long tempoVoltasTotal = 0;
+	for (int i = 0; i < voltasMax; i++)
+		tempoVoltasTotal += tempoVoltasExibicao[i];
+
+	mediaMapeamento = tempoVoltasTotal / voltasMax;
+
+	digitalWrite(pistaPositivo, LOW);
+	digitalWrite(pistaNegativo, LOW);
+	analogWrite(pista, 0);
+
+	Serial.print("Mapeamento na velocidade ");
+	Serial.print(valorMapeamento);
+	Serial.print(" media ");
+	Serial.print(mediaMapeamento);
+	Serial.println(" milisegundos.");
 }
 
 void ContabilizarVolta()
@@ -73,27 +94,6 @@ void ContabilizarVolta()
 
 	if (voltas == voltasMax)
 		EncerrarMapeamento();
-}
-
-void EncerrarMapeamento()
-{
-	mapeamentoIniciado = false;
-
-	long tempoVoltasTotal = 0;
-	for (int i = 0; i < voltasMax; i++)
-		tempoVoltasTotal += tempoVoltasExibicao[i];
-
-	mediaMapeamento = tempoVoltasTotal / voltasMax;
-
-	digitalWrite(pistaPositivo, LOW);
-	digitalWrite(pistaNegativo, LOW);
-	analogWrite(pista, 0);
-
-	Serial.print("Mapeamento na velocidade ");
-	Serial.print(valorMapeamento);
-	Serial.print(" media ");
-	Serial.print(mediaMapeamento);
-	Serial.println(" milisegundos.");
 }
 
 void ChecarBotaoInicio()

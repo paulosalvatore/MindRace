@@ -1,6 +1,6 @@
 /*
 
-MindRace - Software do Arduíno - Desenvolvido por Paulo Salvatore
+MindRace - Software do Arduino - Desenvolvido por Paulo Salvatore
 
 
 VISÃO GERAL
@@ -11,7 +11,7 @@ VISÃO GERAL
 
 - A energização da pista se baseará nos valores que o programa recebe pela porta serial.
 
-- Caso a comunicação entre o programa conectado ao MindWave e o arduíno estiver comprometida, é possível acionar
+- Caso a comunicação entre o programa conectado ao MindWave e o arduino estiver comprometida, é possível acionar
 o botão de emergência para que o programa comece a gerar valores aleatórios e energize a pista com base neles.
 
 - Um outro sensor irá efetuar o trabalho de contagem das voltas, sempre que o sensor for acionado, o programa irá
@@ -24,7 +24,7 @@ carrinho sair da frente do sensor.
 - O programa irá imprimir o número da volta atual na porta serial sempre que:
 A corrida for iniciada;
 O número da volta conforme o sensor de voltas for alterado;
-A corrida for finalizada;
+A corrida for finalizada.
 
 
 LEDs DE CONTROLE
@@ -48,9 +48,16 @@ sinal, o LED apagará. Enquanto o LED estiver ligado, não é possível contabilizar
 
 */
 
-int botaoInicio = 6;
-int chaveEmergencia = 7;
-int sensor = 5;
+#include <SimpleTimer.h>
+
+SimpleTimer simpleTimer;
+
+int botaoInicio = A2;
+int chaveEmergencia = A1;
+int chaveSelecaoPista = 13; // A0 - 13 temporário enquanto não ajeita os pinos
+int botaoPosicionamento = A3;
+
+int sensor = A4;
 
 int pistaPositivo = 2;
 int pista = 3;
@@ -62,6 +69,9 @@ int ledOff = 11;
 int ledConcentracao = 10;
 int ledEmergencia = 9;
 int ledVoltas = 8;
+int ledPosicionamento = 7;
+int ledPistaExterna = 6;
+int ledPistaInterna = 5;
 
 bool corridaIniciada = false;
 
@@ -69,7 +79,8 @@ bool emergenciaAtivado = false;
 
 bool botaoInicioLiberado = true;
 bool emergenciaLiberado = true;
-bool sensorLiberado = true;
+
+bool sensorLiberado = false;
 unsigned long tempoSensor;
 float delaySensor = 500;
 
@@ -86,16 +97,36 @@ float delayUltimaConcentracao = 5000;
 bool ledConcentracaoLigado = false;
 int variacaoConcentracaoAleatoria[] = {10, 41};
 
-int energizarIntervalo[] = {50, 95};
+int energizarIntervalo[] = {50, 84};
+int energizacaoFixa = 0;
 
 unsigned long tempoAtual;
 unsigned long tempoUltimaAtualizacao;
 float delayAtualizacao = 2000;
 
+bool botaoPosicionamentoLiberado = false;
+bool posicionamentoLiberado = false;
+bool posicionamentoIniciado = false;
+int valorPosicionamentoAutomatico = 60;
+int duracaoPosicionamentoAutomatico[] = {3150, 2150};
+int delayAposEtapa1 = 500;
+unsigned long tempoEnergizacao;
+float delayEnergizacao;
+
+int pistaSelecionada;
+
+void AtualizarLedsStatus()
+{
+	digitalWrite(ledOn, corridaIniciada ? HIGH : LOW);
+	digitalWrite(ledOff, corridaIniciada ? LOW : HIGH);
+}
+
 void setup()
 {
 	pinMode(botaoInicio, INPUT);
 	pinMode(chaveEmergencia, INPUT);
+	pinMode(chaveSelecaoPista, INPUT);
+	pinMode(botaoPosicionamento, INPUT);
 
 	pinMode(sensor, INPUT);
 
@@ -108,21 +139,18 @@ void setup()
 	pinMode(ledConcentracao, OUTPUT);
 	pinMode(ledEmergencia, OUTPUT);
 	pinMode(ledVoltas, OUTPUT);
+	pinMode(ledPosicionamento, OUTPUT);
+	pinMode(ledPistaExterna, OUTPUT);
+	pinMode(ledPistaInterna, OUTPUT);
 
 	Serial.begin(9600);
 
 	AtualizarLedsStatus();
 }
 
-void AtualizarLedsStatus()
-{
-	digitalWrite(ledOn, (corridaIniciada) ? HIGH : LOW);
-	digitalWrite(ledOff, (corridaIniciada) ? LOW : HIGH);
-}
-
 void AtualizarLedEmergencia()
 {
-	digitalWrite(ledEmergencia, (emergenciaAtivado) ? HIGH : LOW);
+	digitalWrite(ledEmergencia, emergenciaAtivado ? HIGH : LOW);
 }
 
 void AtualizarLedVoltas(bool desligar = false)
@@ -130,11 +158,41 @@ void AtualizarLedVoltas(bool desligar = false)
 	digitalWrite(ledVoltas, (!sensorLiberado && !desligar) ? HIGH : LOW);
 }
 
+void ApagarLedVoltas()
+{
+	AtualizarLedVoltas(true);
+}
+
 void PiscarLedConcentracao()
 {
-	digitalWrite(ledConcentracao, LOW);
-	delay(100);
+	ApagarLedConcentracao();
+	simpleTimer.setTimeout(100, ApagarLedConcentracao);
+}
+
+void AcenderLedConcentracao()
+{
 	digitalWrite(ledConcentracao, HIGH);
+}
+
+void ApagarLedConcentracao()
+{
+	digitalWrite(ledConcentracao, LOW);
+}
+
+void AtualizarLedPosicionamento(bool desligar = false)
+{
+	digitalWrite(ledPosicionamento, posicionamentoIniciado ? HIGH : LOW);
+}
+
+void AtualizarLedPistaSelecionada()
+{
+	digitalWrite(ledPistaExterna, pistaSelecionada == 0 ? HIGH : LOW);
+	digitalWrite(ledPistaInterna, pistaSelecionada == 1 ? HIGH : LOW);
+}
+
+void ExibirVoltas()
+{
+	Serial.println(voltas);
 }
 
 void IniciarCorrida()
@@ -151,8 +209,7 @@ void EncerrarCorrida()
 {
 	corridaIniciada = false;
 	AtualizarLedsStatus();
-	delay(100);
-	AtualizarLedVoltas(true);
+	simpleTimer.setTimeout(100, ApagarLedVoltas);
 }
 
 void ContarVoltas()
@@ -165,13 +222,11 @@ void ContarVoltas()
 		EncerrarCorrida();
 }
 
-void ExibirVoltas()
-{
-	Serial.println(voltas);
-}
-
 void ChecarBotaoInicio()
 {
+	if (corridaIniciada || posicionamentoIniciado)
+		return;
+
 	bool leituraBotaoInicio = digitalRead(botaoInicio);
 	if (botaoInicioLiberado && leituraBotaoInicio)
 	{
@@ -198,17 +253,45 @@ void ChecarEmergencia()
 	}
 }
 
+void ChecarPistaSelecionada()
+{
+	bool leituraSelecaoPista = digitalRead(chaveSelecaoPista);
+	if (leituraSelecaoPista != pistaSelecionada)
+	{
+		pistaSelecionada = leituraSelecaoPista;
+		AtualizarLedPistaSelecionada();
+	}
+}
+
+void EnergizarPistaTempo(int energia, float tempo)
+{
+	energizacaoFixa = energia;
+	delayEnergizacao = tempo;
+	tempoEnergizacao = tempoAtual;
+	EnergizarPista();
+}
+
+void EnergizarPistaTempoAutomatico()
+{
+	EnergizarPistaTempo(valorPosicionamentoAutomatico, duracaoPosicionamentoAutomatico[pistaSelecionada]);
+}
+
 void ChecarSensor()
 {
-	if (!corridaIniciada)
+	if (!corridaIniciada && !posicionamentoIniciado)
 		return;
 
 	bool leituraSensor = digitalRead(sensor);
+
 	if (sensorLiberado && leituraSensor)
 	{
 		sensorLiberado = false;
 		AtualizarLedVoltas();
-		ContarVoltas();
+		if (corridaIniciada)
+			ContarVoltas();
+		else if (posicionamentoIniciado)
+			ProcessarPosicionamento(2);
+
 		tempoSensor = tempoAtual;
 	}
 	else if (!sensorLiberado && !leituraSensor && tempoAtual > tempoSensor + delaySensor) {
@@ -252,7 +335,7 @@ void AtualizarConcentracaoAleatoria()
 	if (tempoAtual > tempoUltimaAtualizacao + delayAtualizacao)
 	{
 		int modificador = random(variacaoConcentracaoAleatoria[0], variacaoConcentracaoAleatoria[1]);
-		int multiplicador = random(0, 2) == 0 ? 1 : -1;
+		int multiplicador = concentracaoAleatoria > 30 ? random(0, 2) == 0 ? 1 : -1 : 1;
 
 		concentracaoAleatoria = min(concentracaoMax, max(concentracaoMin, concentracao + modificador * multiplicador));
 
@@ -262,27 +345,100 @@ void AtualizarConcentracaoAleatoria()
 
 void EnergizarPista()
 {
-	if (emergenciaAtivado)
-		concentracao = concentracaoAleatoria;
+	int energia;
+	if (energizacaoFixa > 0)
+		energia = energizacaoFixa;
+	else if (energizacaoFixa == -1)
+	{
+		energia = 0;
+		energizacaoFixa = 0;
+	}
+	else
+	{
+		if (emergenciaAtivado)
+			concentracao = concentracaoAleatoria;
 
-	int energia = (corridaIniciada) ? max(energizarIntervalo[0], concentracao * energizarIntervalo[1] / 100) : 0;
+		energia = (corridaIniciada) ? max(energizarIntervalo[0], concentracao * energizarIntervalo[1] / 100) : 0;
+	}
+
+	if (tempoEnergizacao > 0 && tempoAtual > tempoEnergizacao + delayEnergizacao)
+	{
+		delayEnergizacao = 0;
+		tempoEnergizacao = 0;
+		energizacaoFixa = 0;
+	}
 
 	if (energia != energiaPista)
 	{
-		digitalWrite(pistaPositivo, LOW);
-		digitalWrite(pistaNegativo, HIGH);
+		digitalWrite(pistaPositivo, HIGH);
+		digitalWrite(pistaNegativo, LOW);
 		analogWrite(pista, energia);
 		energiaPista = energia;
 	}
+}
+
+void DesenergizarPista()
+{
+	energizacaoFixa = -1;
+	EnergizarPista();
+}
+
+void IniciarPosicionamento()
+{
+	if (!posicionamentoIniciado)
+	{
+		ProcessarPosicionamento(1);
+		posicionamentoIniciado = true;
+		AtualizarLedPosicionamento();
+	}
+}
+
+void ProcessarPosicionamento(int etapaPosicionamento)
+{
+	if (etapaPosicionamento == 1)
+		energizacaoFixa = valorPosicionamentoAutomatico;
+	else if (etapaPosicionamento == 2)
+	{
+		DesenergizarPista();
+		simpleTimer.setTimeout(delayAposEtapa1, EnergizarPistaTempoAutomatico);
+		simpleTimer.setTimeout(duracaoPosicionamentoAutomatico[pistaSelecionada], EncerrarPosicionamento);
+	}
+}
+
+void EncerrarPosicionamento()
+{
+	if (posicionamentoIniciado)
+	{
+		posicionamentoIniciado = false;
+		AtualizarLedPosicionamento();
+	}
+}
+
+void ChecarPosicionamentoAutomatico()
+{
+	if (corridaIniciada)
+		return;
+
+	bool leituraBotaoPosicionamento = digitalRead(botaoPosicionamento);
+	if (botaoPosicionamentoLiberado && leituraBotaoPosicionamento)
+	{
+		IniciarPosicionamento();
+		botaoPosicionamentoLiberado = false;
+	}
+	else if (!botaoPosicionamentoLiberado && !leituraBotaoPosicionamento)
+		botaoPosicionamentoLiberado = true;
 }
 
 void loop()
 {
 	tempoAtual = millis();
 
+	ChecarPosicionamentoAutomatico();
+
 	ChecarBotaoInicio();
 	ChecarEmergencia();
 	ChecarSensor();
+	ChecarPistaSelecionada();
 
 	ValidarConcentracao();
 	AtualizarConcentracao();
@@ -292,4 +448,3 @@ void loop()
 
 	delay(1); // Apenas para controlar o tempo de execução do programa
 }
-
