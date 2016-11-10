@@ -54,5 +54,6 @@ extern "C" void __cxa_pure_virtual() {;}
 #undef PSTR
 #define PSTR(string_literal) ((const PROGMEM char *)(string_literal))")
 #include "Autorama.ino"
+#include "Autorama - Circuits.IO.ino"
 #include "Mapear Velocidade.ino"
 #endif

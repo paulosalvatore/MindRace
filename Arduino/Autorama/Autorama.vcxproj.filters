@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Include="Autorama.ino" />
     <None Include="Mapear Velocidade.ino" />
+    <None Include="Autorama - Circuits.IO.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.Autorama.vsarduino.h">

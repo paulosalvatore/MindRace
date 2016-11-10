@@ -3,58 +3,16 @@
 MindRace - Software do Arduino - Desenvolvido por Paulo Salvatore
 
 
-VISÃO GERAL
+Versão atualizada compatível com o Circuits.IO - Usada apenas em testes onlines.
 
-- O programa inicia em um estado neutro, aguardando ação do botão de início.
-
-- Ao acionar o botão de início, o programa irá iniciar uma corrida.
-
-- A energização da pista se baseará nos valores que o programa recebe pela porta serial.
-
-- Caso a comunicação entre o programa conectado ao MindWave e o arduino estiver comprometida, é possível acionar
-o botão de emergência para que o programa comece a gerar valores aleatórios e energize a pista com base neles.
-
-- Um outro sensor irá efetuar o trabalho de contagem das voltas, sempre que o sensor for acionado, o programa irá
-contabilizar uma volta. Ao atingir o limite de voltas a corrida será finalizada e o programa irá retornar ao status
-inicial.	Mesmo que o sensor continue ativo diversas vezes seguidamente, ele só irá aceitar um novo valor quando
-entrar em estado inativo. Exemplo: Se o carrinho parar na frente do sensor, enviando constantemente uma informação,
-o sensor irá considerar aquilo como apenas uma informação e só irá liberar uma nova entrada de informação quando o
-carrinho sair da frente do sensor.
-
-- O programa irá imprimir o número da volta atual na porta serial sempre que:
-A corrida for iniciada;
-O número da volta conforme o sensor de voltas for alterado;
-A corrida for finalizada.
-
-
-LEDs DE CONTROLE
-
-Existem 5 LEDs que indicam o status de alguns componentes do circuito:
-
-- LED Verde - Status - Corrida Ativa
-Quando tiver uma corrida ativa, esse LED irá ficar aceso.
-- LED Vermelho - Status - Nenhuma Corrida Ativa
-Quando não tiver nenhuma corrida ativa, esse LED irá ficar aceso.
-- LED Laranja - Concentração - Última Concentração Válida
-Quando o programa receber um valor de concentração via porta serial, esse LED irá acender enquanto esse valor
-estiver ativo, caso um novo valor não seja recebido em um certo prazo de segundos, esse LED irá apagar e o
-valor de concentração será zerado.
-- LED Amarelo - Emergência - Estado de Emergência acionado
-Quando a chave de emergência for acionada esse LED irá ficar aceso para representar que o estado de emergência
-está acionado na pista.
-- LED Azul - Sensor - Estado do Sensor
-Enquanto o sensor estiver obtendo algum valor esse LED irá ficar aceso. Assim que o sensor parar de emitir
-sinal, o LED apagará. Enquanto o LED estiver ligado, não é possível contabilizar novas voltas na pista.
+Essa versão não utiliza a library 'SimpleTimer'.
 
 */
 
-#include <SimpleTimer.h>
-
-SimpleTimer simpleTimer;
 
 int botaoInicio = A2;
 int chaveEmergencia = A1;
-int chaveSelecaoPista = 13; // A0 - 13 temporário enquanto não ajeita os pinos
+int chaveSelecaoPista = A0;
 int botaoPosicionamento = A3;
 
 int sensor = A4;
@@ -167,7 +125,8 @@ void ApagarLedVoltas()
 void PiscarLedConcentracao()
 {
 	ApagarLedConcentracao();
-	simpleTimer.setTimeout(100, ApagarLedConcentracao);
+	delay(100);
+	ApagarLedConcentracao();
 }
 
 void AcenderLedConcentracao()
@@ -210,7 +169,8 @@ void EncerrarCorrida()
 {
 	corridaIniciada = false;
 	AtualizarLedsStatus();
-	simpleTimer.setTimeout(100, ApagarLedVoltas);
+	delay(100);
+	ApagarLedVoltas();
 }
 
 void ContarVoltas()
@@ -401,8 +361,16 @@ void ProcessarPosicionamento(int etapaPosicionamento)
 	else if (etapaPosicionamento == 2)
 	{
 		DesenergizarPista();
-		simpleTimer.setTimeout(delayAposEtapa1, EnergizarPistaTempoAutomatico);
-		simpleTimer.setTimeout(duracaoPosicionamentoAutomatico[pistaSelecionada], EncerrarPosicionamento);
+		ChecarSensor();
+
+		delay(delayAposEtapa1);
+
+		EnergizarPistaTempoAutomatico();
+		ChecarSensor();
+
+		delay(duracaoPosicionamentoAutomatico[pistaSelecionada]);
+
+		EncerrarPosicionamento();
 	}
 }
 
