@@ -33,7 +33,7 @@ que pare na posição desejada.
 OBS.: Para ajustar a posição de parada, é necessário mexer na duração da energização da pista durante o posicionamento
 através da variável array duracaoPosicionamentoAutomatico[] - Sendo que o primeiro valor é da posição externa e o
 segundo é da posição interna. Também é possível mexer na velocidade do carrinho através da variável array
-valorPosicionamentoAutomatico que serve para ambas as pistas.
+valorPosicionamentoAutomatico[] - seguindo as mesmas posições citadas acima para os valores de cada pista.
 
 
 LEDs DE CONTROLE
@@ -104,6 +104,8 @@ float delaySensor = 500;
 int voltas = 0;
 int maxVoltas = 3;
 unsigned long tempoLedVoltas;
+int contadorSensorVoltas;
+int contadorNecessarioSensorVoltas = 10;
 
 int concentracao = 0;
 int concentracaoAleatoria = 0;
@@ -124,8 +126,8 @@ float delayAtualizacao = 2000;
 bool botaoPosicionamentoLiberado = false;
 bool posicionamentoLiberado = false;
 bool posicionamentoIniciado = false;
-int valorPosicionamentoAutomatico = 60;
-int duracaoPosicionamentoAutomatico[] = {3150, 2150};
+int valorPosicionamentoAutomatico[] = {60, 70};
+int duracaoPosicionamentoAutomatico[] = {2200, 100};
 int delayAposEtapa1 = 500;
 unsigned long tempoEnergizacao;
 float delayEnergizacao;
@@ -291,7 +293,7 @@ void EnergizarPistaTempo(int energia, float tempo)
 
 void EnergizarPistaTempoAutomatico()
 {
-	EnergizarPistaTempo(valorPosicionamentoAutomatico, duracaoPosicionamentoAutomatico[pistaSelecionada]);
+	EnergizarPistaTempo(valorPosicionamentoAutomatico[pistaSelecionada], duracaoPosicionamentoAutomatico[pistaSelecionada]);
 }
 
 void ChecarSensor()
@@ -299,20 +301,26 @@ void ChecarSensor()
 	if (!corridaIniciada && !posicionamentoIniciado)
 		return;
 
-	bool leituraSensor = digitalRead(sensor);
+	bool leituraSensor = !digitalRead(sensor);
 
 	if (sensorLiberado && leituraSensor)
 	{
-		sensorLiberado = false;
-		AtualizarLedVoltas();
-		if (corridaIniciada)
-			ContarVoltas();
-		else if (posicionamentoIniciado)
-			ProcessarPosicionamento(2);
+		contadorSensorVoltas++;
+		if (contadorSensorVoltas >= contadorNecessarioSensorVoltas)
+		{
+			sensorLiberado = false;
+			AtualizarLedVoltas();
+			if (corridaIniciada)
+				ContarVoltas();
+			else if (posicionamentoIniciado)
+				ProcessarPosicionamento(2);
+		}
 
 		tempoSensor = tempoAtual;
 	}
-	else if (!sensorLiberado && !leituraSensor && tempoAtual > tempoSensor + delaySensor) {
+	else if (!sensorLiberado && !leituraSensor && tempoAtual > tempoSensor + delaySensor)
+	{
+		contadorSensorVoltas = 0;
 		sensorLiberado = true;
 		AtualizarLedVoltas();
 	}
@@ -414,7 +422,7 @@ void IniciarPosicionamento()
 void ProcessarPosicionamento(int etapaPosicionamento)
 {
 	if (etapaPosicionamento == 1)
-		energizacaoFixa = valorPosicionamentoAutomatico;
+		energizacaoFixa = valorPosicionamentoAutomatico[pistaSelecionada];
 	else if (etapaPosicionamento == 2)
 	{
 		DesenergizarPista();
@@ -429,6 +437,7 @@ void EncerrarPosicionamento()
 	{
 		posicionamentoIniciado = false;
 		AtualizarLedPosicionamento();
+		ApagarLedVoltas();
 	}
 }
 
@@ -447,9 +456,23 @@ void ChecarPosicionamentoAutomatico()
 		botaoPosicionamentoLiberado = true;
 }
 
+void ChecarConexaoUnity()
+{
+	if (Serial.available() > 0)
+	{
+		int byteRecebido = Serial.read();
+		if (byteRecebido == 99)
+			Serial.println(byteRecebido);
+	}
+}
+
 void loop()
 {
+	simpleTimer.run();
+
 	tempoAtual = millis();
+
+	ChecarConexaoUnity();
 
 	ChecarPosicionamentoAutomatico();
 

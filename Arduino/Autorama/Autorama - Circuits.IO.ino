@@ -66,7 +66,7 @@ bool botaoPosicionamentoLiberado = false;
 bool posicionamentoLiberado = false;
 bool posicionamentoIniciado = false;
 int valorPosicionamentoAutomatico = 60;
-int duracaoPosicionamentoAutomatico[] = {3150, 2150};
+int duracaoPosicionamentoAutomatico[] = {3150, 100};
 int delayAposEtapa1 = 500;
 unsigned long tempoEnergizacao;
 float delayEnergizacao;
