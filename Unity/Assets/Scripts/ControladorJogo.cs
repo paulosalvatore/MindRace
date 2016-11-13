@@ -90,7 +90,6 @@ public class ControladorJogo : NetworkBehaviour
 	{
 		vencedorDeclarado = true;
 		vencedorCorrida = vencedor;
-		Debug.LogError("Vencedor da Corrida: " + vencedor);
 	}
 
 	void ChecarVencedorParcial()

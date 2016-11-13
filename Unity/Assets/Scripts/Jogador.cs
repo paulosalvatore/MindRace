@@ -10,6 +10,7 @@ using System.IO;
 public class Jogador : NetworkBehaviour
 {
 	private ControladorJogo controladorJogo;
+	private ControladorConexoes controladorConexoes;
 	private TGCConnectionController controladorNeuroSky;
 	private SerialPort arduino;
 
@@ -45,6 +46,7 @@ public class Jogador : NetworkBehaviour
 	void Start()
 	{
 		controladorJogo = ControladorJogo.Pegar();
+		controladorConexoes = ControladorConexoes.Pegar();
 
 		if (isServer)
 			idJogador = isLocalPlayer ? 1 : 2;
@@ -61,11 +63,20 @@ public class Jogador : NetworkBehaviour
 		controladorNeuroSky.UpdatePoorSignalEvent += OnUpdateSinal;
 		controladorNeuroSky.UpdateAttentionEvent += OnUpdateAtencao;
 
-		if (isServer)
+		if (controladorConexoes.arduino != null)
+		{
+			arduino = controladorConexoes.arduino;
+			StartCoroutine
+			(
+				LerArduino((string s) => CmdContabilizarVolta(s))
+			);
+		}
+
+		/*if (isServer)
 		{
 			try
 			{
-				arduino = new SerialPort("COM7", 9600);
+				arduino = new SerialPort("COM9", 9600);
 				arduino.ReadTimeout = 10;
 				arduino.Open();
 
@@ -80,8 +91,10 @@ public class Jogador : NetworkBehaviour
 		}
 		else
 		{
-			InvokeRepeating("CmdSimularVoltas", 1f, 1.1f);
-		}
+			// InvokeRepeating("CmdSimularVoltas", 1f, 5f);
+		}*/
+
+		StartCoroutine(GravarArduino());
 	}
 
 	[Command]
@@ -136,48 +149,41 @@ public class Jogador : NetworkBehaviour
 	[Command]
 	void CmdContabilizarVolta(string s)
 	{
-		voltas = int.Parse(s);
-
-		if (!controladorJogo.jogoIniciado)
-			return;
-
-		if (voltas > 0)
+		try
 		{
-			float tempoVolta = controladorJogo.tempoServidor - (voltas == 1 ? controladorJogo.tempoInicioCorrida : controladorJogo.tempoInicioCorrida + tempoVoltas[voltas - 2]);
+			voltas = int.Parse(s);
 
-			/*
-			Debug.LogError("tempoServidor: " + controladorJogo.tempoServidor + " - tempoInicioCorrida: " + controladorJogo.tempoInicioCorrida);
-			if (voltas > 1)
-				Debug.LogError("tempoVoltas[voltas - 2]: " + tempoVoltas[voltas - 2]);
-			*/
+			if (!controladorJogo.jogoIniciado)
+				return;
 
-			tempoVoltas.Add(tempoVolta);
-		}
-
-		if (voltas == 0)
-		{
-			// Apenas durante os testes pois apenas um está no Arduíno
-			Jogador jogador2 = controladorJogo.jogadores[1].GetComponent<Jogador>();
-			jogador2.voltas = 0;
-			jogador2.tempoVoltas.Clear();
-			
-			tempoVoltas.Clear();
-
-			controladorJogo.IniciarCorrida();
-		}
-		else if (voltas == controladorJogo.voltasTotal)
-		{
-			if (controladorJogo.vencedorDeclarado)
+			if (voltas > 0)
 			{
-				controladorJogo.EncerrarCorrida();
+				// if (tempoVoltas.Count >= 3)
+				// {
+				float tempoVolta = controladorJogo.tempoServidor - (voltas == 1 ? controladorJogo.tempoInicioCorrida : controladorJogo.tempoInicioCorrida + tempoVoltas[voltas - 2]);
+				tempoVoltas.Add(tempoVolta);
+				// }
 			}
-			else
+
+			if (voltas == 0)
 			{
-				controladorJogo.DeclararVencedor(idJogador);
+				tempoVoltas.Clear();
+
+				controladorJogo.IniciarCorrida();
+			}
+			else if (voltas == controladorJogo.voltasTotal)
+			{
+				if (controladorJogo.vencedorDeclarado)
+				{
+					controladorJogo.EncerrarCorrida();
+				}
+				else
+				{
+					controladorJogo.DeclararVencedor(idJogador);
+				}
 			}
 		}
-
-		// Debug.LogError("Alterar voltas para " + voltas);
+		catch (FormatException) { }
 	}
 	
 	void OnUpdateSinal(int valor)
@@ -248,6 +254,19 @@ public class Jogador : NetworkBehaviour
 			fail();
 
 		yield return null;
+	}
+
+	IEnumerator GravarArduino()
+	{
+		while (true)
+		{
+			if (arduino != null)
+			{
+				arduino.WriteLine(concentracao.ToString());
+				arduino.BaseStream.Flush();
+			}
+			yield return new WaitForSeconds(1f);
+		}
 	}
 
 	void OnApplicationQuit()

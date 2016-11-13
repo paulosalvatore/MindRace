@@ -58,7 +58,7 @@ public class TGCConnectionController : MonoBehaviour
 				byte[] myWriteBuffer = Encoding.ASCII.GetBytes(@"{""enableRawOutput"": true, ""format"": ""Json""}");
 				stream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
-				// InvokeRepeating("ParseData", 0.1f, 0.02f); // Taxa Original de Repetição 0.02f - Mudei para 0.1f pois estava lagando muito
+				// InvokeRepeating("ParseData", 0.1f, 0.02f); // Taxa Original de Repetição 0.02f - Mudei para 0.1f pois estava lagando muito - mudei para 1f porque qnd n tava conectado tava osso os lag
 				InvokeRepeating("ParseData", 0.1f, 0.1f);
 			}
 			catch (SocketException se) { }
