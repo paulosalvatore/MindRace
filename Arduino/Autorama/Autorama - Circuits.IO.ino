@@ -65,7 +65,7 @@ float delayAtualizacao = 2000;
 bool botaoPosicionamentoLiberado = false;
 bool posicionamentoLiberado = false;
 bool posicionamentoIniciado = false;
-int valorPosicionamentoAutomatico = 60;
+int valorPosicionamentoAutomatico[] = {70, 60};
 int duracaoPosicionamentoAutomatico[] = {3150, 100};
 int delayAposEtapa1 = 500;
 unsigned long tempoEnergizacao;
@@ -234,7 +234,7 @@ void EnergizarPistaTempo(int energia, float tempo)
 
 void EnergizarPistaTempoAutomatico()
 {
-	EnergizarPistaTempo(valorPosicionamentoAutomatico, duracaoPosicionamentoAutomatico[pistaSelecionada]);
+	EnergizarPistaTempo(valorPosicionamentoAutomatico[pistaSelecionada], duracaoPosicionamentoAutomatico[pistaSelecionada]);
 }
 
 void ChecarSensor()
@@ -357,7 +357,7 @@ void IniciarPosicionamento()
 void ProcessarPosicionamento(int etapaPosicionamento)
 {
 	if (etapaPosicionamento == 1)
-		energizacaoFixa = valorPosicionamentoAutomatico;
+		energizacaoFixa = valorPosicionamentoAutomatico[pistaSelecionada];
 	else if (etapaPosicionamento == 2)
 	{
 		DesenergizarPista();

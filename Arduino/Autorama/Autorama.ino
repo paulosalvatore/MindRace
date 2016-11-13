@@ -105,14 +105,13 @@ int voltas = 0;
 int maxVoltas = 3;
 unsigned long tempoLedVoltas;
 int contadorSensorVoltas;
-int contadorNecessarioSensorVoltas = 10;
+int contadorNecessarioSensorVoltas = 5;
 
 int concentracao = 0;
 int concentracaoAleatoria = 0;
-int concentracaoMin = 0;
-int concentracaoMax = 100;
+int concentracaoIntervalo[] = {0, 100};
 unsigned long tempoUltimaConcentracaoRecebida;
-float delayUltimaConcentracao = 5000;
+float delayUltimaConcentracao = 10000;
 bool ledConcentracaoLigado = false;
 int variacaoConcentracaoAleatoria[] = {10, 41};
 
@@ -126,13 +125,18 @@ float delayAtualizacao = 2000;
 bool botaoPosicionamentoLiberado = false;
 bool posicionamentoLiberado = false;
 bool posicionamentoIniciado = false;
-int valorPosicionamentoAutomatico[] = {60, 70};
-int duracaoPosicionamentoAutomatico[] = {2200, 100};
+int valorPosicionamentoAutomatico[] = {65, 65};
+int duracaoPosicionamentoAutomatico[] = {1500, 0};
 int delayAposEtapa1 = 500;
 unsigned long tempoEnergizacao;
 float delayEnergizacao;
 
 int pistaSelecionada;
+
+int valoresRecebidos[3];
+unsigned long tempoUltimoValorRecebido;
+float delayUltimoValorRecebido = 100;
+int quantidadeValoresRecebidos;
 
 void AtualizarLedsStatus()
 {
@@ -183,10 +187,9 @@ void ApagarLedVoltas()
 	AtualizarLedVoltas(true);
 }
 
-void PiscarLedConcentracao()
+void ApagarLedConcentracao()
 {
-	ApagarLedConcentracao();
-	simpleTimer.setTimeout(100, ApagarLedConcentracao);
+	digitalWrite(ledConcentracao, LOW);
 }
 
 void AcenderLedConcentracao()
@@ -194,9 +197,10 @@ void AcenderLedConcentracao()
 	digitalWrite(ledConcentracao, HIGH);
 }
 
-void ApagarLedConcentracao()
+void PiscarLedConcentracao()
 {
-	digitalWrite(ledConcentracao, LOW);
+	ApagarLedConcentracao();
+	simpleTimer.setTimeout(100, AcenderLedConcentracao);
 }
 
 void AtualizarLedPosicionamento(bool desligar = false)
@@ -335,25 +339,61 @@ void ValidarConcentracao()
 
 		if (ledConcentracaoLigado)
 		{
-			digitalWrite(ledConcentracao, LOW);
+			ApagarLedConcentracao();
 			ledConcentracaoLigado = false;
 		}
 	}
 	else if (tempoUltimaConcentracaoRecebida != 0 && tempoAtual < tempoUltimaConcentracaoRecebida + delayUltimaConcentracao && !ledConcentracaoLigado)
 	{
-		digitalWrite(ledConcentracao, HIGH);
+		AcenderLedConcentracao();
 		ledConcentracaoLigado = true;
 	}
 }
 
-void AtualizarConcentracao()
+void ChecarRecebimentoSerial()
 {
-	if (Serial.available())
+	if (Serial.available() > 0)
 	{
-		concentracao = Serial.parseInt();
-		PiscarLedConcentracao();
-		tempoUltimaConcentracaoRecebida = tempoAtual;
+		int dadoRecebido = Serial.read();
+
+		if (dadoRecebido == 97)
+			ChecarConexaoUnity(dadoRecebido);
+		else
+		{
+			int valorRecebido = dadoRecebido - '0';
+			tempoUltimoValorRecebido = tempoAtual;
+			valoresRecebidos[quantidadeValoresRecebidos] = valorRecebido;
+			quantidadeValoresRecebidos++;
+		}
 	}
+}
+
+void ValidarRecebimentoSerial()
+{
+	if (tempoAtual > tempoUltimoValorRecebido + delayUltimoValorRecebido && quantidadeValoresRecebidos > 0)
+	{
+		String valorRecebidoCompleto = "";
+		for (int i = 0; i < quantidadeValoresRecebidos; i++)
+		{
+			int valor = valoresRecebidos[i];
+			if (valor >= 0)
+			{
+				valorRecebidoCompleto += valoresRecebidos[i];
+				valoresRecebidos[i] = -1;
+			}
+		}
+
+		int valorRecebido = valorRecebidoCompleto.toInt();
+		AtualizarConcentracao(valorRecebido);
+		quantidadeValoresRecebidos = 0;
+	}
+}
+
+void AtualizarConcentracao(int valor)
+{
+	concentracao = valor;
+	PiscarLedConcentracao();
+	tempoUltimaConcentracaoRecebida = tempoAtual;
 }
 
 void AtualizarConcentracaoAleatoria()
@@ -363,7 +403,7 @@ void AtualizarConcentracaoAleatoria()
 		int modificador = random(variacaoConcentracaoAleatoria[0], variacaoConcentracaoAleatoria[1]);
 		int multiplicador = concentracaoAleatoria > 30 ? random(0, 2) == 0 ? 1 : -1 : 1;
 
-		concentracaoAleatoria = min(concentracaoMax, max(concentracaoMin, concentracao + modificador * multiplicador));
+		concentracaoAleatoria = min(concentracaoIntervalo[1], max(concentracaoIntervalo[0], concentracao + modificador * multiplicador));
 
 		tempoUltimaAtualizacao = tempoAtual;
 	}
@@ -384,7 +424,8 @@ void EnergizarPista()
 		if (emergenciaAtivado)
 			concentracao = concentracaoAleatoria;
 
-		energia = (corridaIniciada) ? max(energizarIntervalo[0], concentracao * energizarIntervalo[1] / 100) : 0;
+		int energizacaoIntervaloReal = energizarIntervalo[1] - energizarIntervalo[0];
+		energia = corridaIniciada ? max(energizarIntervalo[0], min(energizarIntervalo[1], energizarIntervalo[0] + concentracao * energizacaoIntervaloReal / 100)) : 0;
 	}
 
 	if (tempoEnergizacao > 0 && tempoAtual > tempoEnergizacao + delayEnergizacao)
@@ -443,7 +484,7 @@ void EncerrarPosicionamento()
 
 void ChecarPosicionamentoAutomatico()
 {
-	if (corridaIniciada)
+	if (corridaIniciada || posicionamentoIniciado)
 		return;
 
 	bool leituraBotaoPosicionamento = digitalRead(botaoPosicionamento);
@@ -456,14 +497,10 @@ void ChecarPosicionamentoAutomatico()
 		botaoPosicionamentoLiberado = true;
 }
 
-void ChecarConexaoUnity()
+void ChecarConexaoUnity(int dadoRecebido)
 {
-	if (Serial.available() > 0)
-	{
-		int byteRecebido = Serial.read();
-		if (byteRecebido == 99)
-			Serial.println(byteRecebido);
-	}
+	if (dadoRecebido == 99)
+		Serial.println(dadoRecebido);
 }
 
 void loop()
@@ -472,7 +509,8 @@ void loop()
 
 	tempoAtual = millis();
 
-	ChecarConexaoUnity();
+	ChecarRecebimentoSerial();
+	ValidarRecebimentoSerial();
 
 	ChecarPosicionamentoAutomatico();
 
@@ -482,7 +520,6 @@ void loop()
 	ChecarPistaSelecionada();
 
 	ValidarConcentracao();
-	AtualizarConcentracao();
 	AtualizarConcentracaoAleatoria();
 
 	EnergizarPista();
