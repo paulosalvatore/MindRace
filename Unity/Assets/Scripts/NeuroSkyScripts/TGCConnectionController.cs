@@ -30,8 +30,7 @@ public class TGCConnectionController : MonoBehaviour
 	public event UpdateFloatValueDelegate UpdateHighBetaEvent;
 	public event UpdateFloatValueDelegate UpdateLowGammaEvent;
 	public event UpdateFloatValueDelegate UpdateHighGammaEvent;
-
-
+	
 	void Start()
 	{
 		Connect();
@@ -57,12 +56,11 @@ public class TGCConnectionController : MonoBehaviour
 				buffer = new byte[1024];
 				byte[] myWriteBuffer = Encoding.ASCII.GetBytes(@"{""enableRawOutput"": true, ""format"": ""Json""}");
 				stream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-
-				// InvokeRepeating("ParseData", 0.1f, 0.02f); // Taxa Original de Repetição 0.02f - Mudei para 0.1f pois estava lagando muito - mudei para 1f porque qnd n tava conectado tava osso os lag
+				
 				InvokeRepeating("ParseData", 0.1f, 0.1f);
 			}
-			catch (SocketException se) { }
-			catch (IOException ioe) { }
+			catch (SocketException) { }
+			catch (IOException) { }
 		}
 	}
 
@@ -138,16 +136,10 @@ public class TGCConnectionController : MonoBehaviour
 					}
 				}
 			}
-			catch (IOException e)
-			{
-				// Debug.Log("IOException " + e);
-			}
-			catch (System.Exception e)
-			{
-				// Debug.Log("Exception " + e);
-			}
+			catch (IOException) { }
+			catch (System.Exception) { }
 		}
-	}// end ParseData
+	}
 
 	void OnApplicationQuit()
 	{

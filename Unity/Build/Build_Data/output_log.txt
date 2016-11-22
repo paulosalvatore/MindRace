@@ -1,13 +1,3 @@
-Mono path[0] = 'C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Build/Build_Data/Managed'
-Mono path[1] = 'C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Build/Build_Data/Mono'
-Mono config path = 'C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Build/Build_Data/Mono/etc'
-PlayerConnection initialized from C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Build/Build_Data (debug = 0)
-PlayerConnection initialized network socket : 0.0.0.0 55337
-Multi-casting "[IP] 0.0.0.0 [Port] 55337 [Flags] 3 [Guid] 2795669079 [EditorId] 3722634787 [Version] 1048832 [Id] WindowsPlayer(PauloSalvatore) [Debug] 1" to [225.0.0.222:54997]...
-Waiting for connection from host on [0.0.0.0:55337]...
-Timed out. Continuing without host connection.
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56079
-PlayerConnection already initialized - listening to [0.0.0.0:55337]
 Initialize engine version: 5.4.0f3 (a6d8d714de6f)
 GfxDevice: creating device client; threaded=1
 Direct3D:
@@ -18,6 +8,8 @@ Direct3D:
 Begin MonoManager ReloadAssembly
 Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.dll (this message is harmless)
 Loading C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
 Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\Assembly-CSharp.dll (this message is harmless)
 Loading C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
 Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.UI.dll (this message is harmless)
@@ -28,25 +20,35 @@ Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Da
 Loading C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\Jayrock.dll into Unity Child Domain
 Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\Jayrock.Json.dll (this message is harmless)
 Loading C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\Jayrock.Json.dll into Unity Child Domain
-- Completed reload, in  0.068 seconds
+- Completed reload, in  0.057 seconds
 Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.808988 ms
+UnloadTime: 1.318318 ms
 Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\System.Configuration.dll (this message is harmless)
 Platform assembly: C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Build\Build_Data\Managed\System.Xml.dll (this message is harmless)
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 4d58 -> priority: 1 
+  Thread -> id: 2e7c -> priority: 1 
 Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 3.888989 ms
-System memory in use before: 20.4 MB.
-System memory in use after: 20.5 MB.
+UnloadTime: 4.975397 ms
 
-Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 292.
-Total: 1.188741 ms (FindLiveObjects: 0.041481 ms CreateObjectMapping: 0.043061 ms MarkObjects: 1.053630 ms  DeleteObjects: 0.048987 ms)
+Unloading 18 unused Assets to reduce memory usage. Loaded Objects now: 748.
+Total: 1.700342 ms (FindLiveObjects: 0.090468 ms CreateObjectMapping: 0.073481 ms MarkObjects: 1.505182 ms  DeleteObjects: 0.030419 ms)
+
+<RI.Hid> Failed to create device file:
+ 20 O arquivo já está sendo usado por outro processo.
+
+ 
+(Filename:  Line: 54)
+
+<RI.Hid> Failed to create device file:
+ 20 O arquivo já está sendo usado por outro processo.
+
+ 
+(Filename:  Line: 54)
 
 IOException: O dispositivo não reconhece o comando.
 
@@ -56,10 +58,10 @@ IOException: O dispositivo não reconhece o comando.
   at System.IO.Ports.SerialPort.ReadTo (System.String value) [0x00000] in <filename unknown>:0 
   at System.IO.Ports.SerialPort.ReadLine () [0x00000] in <filename unknown>:0 
   at (wrapper remoting-invoke-with-check) System.IO.Ports.SerialPort:ReadLine ()
-  at Jogador+<LerArduino>c__Iterator2.MoveNext () [0x0004a] in C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:233 
-  at UnityEngine.SetupCoroutine.InvokeMoveNext (IEnumerator enumerator, IntPtr returnValueAddress) [0x00020] in C:\buildslave\unity\build\Runtime\Export\Coroutines.cs:17 
+  at Jogador+<LerArduino>c__Iterator2.MoveNext () [0x00000] in <filename unknown>:0 
+  at UnityEngine.SetupCoroutine.InvokeMoveNext (IEnumerator enumerator, IntPtr returnValueAddress) [0x00000] in <filename unknown>:0 
  
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 233)
+(Filename:  Line: -1)
 
 IOException: O dispositivo não reconhece o comando.
 
@@ -67,179 +69,17 @@ IOException: O dispositivo não reconhece o comando.
   at System.IO.Ports.WinSerialStream.Write (System.Byte[] buffer, Int32 offset, Int32 count) [0x00000] in <filename unknown>:0 
   at System.IO.Ports.SerialPort.Write (System.Byte[] buffer, Int32 offset, Int32 count) [0x00000] in <filename unknown>:0 
   at System.IO.Ports.SerialPort.Write (System.String str) [0x00000] in <filename unknown>:0 
-  at System.IO.Ports.SerialPort.WriteLine (System.String str) [0x00000] in <filename unknown>:0 
-  at (wrapper remoting-invoke-with-check) System.IO.Ports.SerialPort:WriteLine (string)
-  at Jogador+<GravarArduino>c__Iterator3.MoveNext () [0x00031] in C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:265 
-  at UnityEngine.SetupCoroutine.InvokeMoveNext (IEnumerator enumerator, IntPtr returnValueAddress) [0x00020] in C:\buildslave\unity\build\Runtime\Export\Coroutines.cs:17 
+  at (wrapper remoting-invoke-with-check) System.IO.Ports.SerialPort:Write (string)
+  at Jogador+<GravarArduino>c__Iterator3.MoveNext () [0x00000] in <filename unknown>:0 
+  at UnityEngine.SetupCoroutine.InvokeMoveNext (IEnumerator enumerator, IntPtr returnValueAddress) [0x00000] in <filename unknown>:0 
  
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 265)
+(Filename:  Line: -1)
 
-<RI.Hid> Failed to create device file:
- 20 O arquivo já está sendo usado por outro processo.
-
- 
-(Filename: C:/buildslave/unity/build/PlatformDependent/Win/RawInput.cpp Line: 54)
-
-Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}
+Log: connection {1} has been disconnected by timeout; address {::ffff:192.168.43.59:7777}
 Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
+UnloadTime: 4.085720 ms
 
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
+Unloading 19 unused Assets to reduce memory usage. Loaded Objects now: 390.
+Total: 3.680387 ms (FindLiveObjects: 0.118518 ms CreateObjectMapping: 0.107061 ms MarkObjects: 3.271894 ms  DeleteObjects: 0.181728 ms)
 
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-UnloadTime: 1.698371 ms
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-System memory in use before: 22.8 MB.
-System memory in use after: 22.8 MB.
-
-Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 347.
-Total: 2.117926 ms (FindLiveObjects: 0.072296 ms CreateObjectMapping: 0.060444 ms MarkObjects: 1.965827 ms  DeleteObjects: 0.016987 ms)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
-Command function CmdAtualizarSinal called on server.
-UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
-UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
-UnityEngine.Logger:Log(LogType, Object)
-UnityEngine.Debug:LogError(Object)
-Jogador:CallCmdAtualizarSinal(Int32)
-Jogador:OnUpdateSinal(Int32) (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\Jogador.cs:191)
-TGCConnectionController:ParseData() (at C:\Users\paulo\Desktop\Autorama\Unity\Autorama\Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs:90)
- 
-(Filename: C:/Users/paulo/Desktop/Autorama/Unity/Autorama/Assets/Scripts/Jogador.cs Line: 191)
-
+Crash!!!

@@ -69,13 +69,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\ControladorConexoes.cs" />
+    <ProjectReference Include="Autorama.CSharp.Plugins.csproj">
+      <Project>{E3E8DAB4-BC76-CEA2-47D0-AFEAA1D886B6}</Project>
+      <Name>Autorama.CSharp.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Scripts\ControladorConexoes.cs" />
     <Compile Include="Assets\Scripts\ControladorJogo.cs" />
     <Compile Include="Assets\Scripts\Jogador.cs" />
     <Compile Include="Assets\Scripts\NeuroSkyScripts\DisplayData.cs" />
     <Compile Include="Assets\Scripts\NeuroSkyScripts\TGCConnectionController.cs" />
     <Compile Include="Assets\Scripts\PreserveGameObject.cs" />
-    <Compile Include="Assets\Test.cs" />
+    <Compile Include="Assets\Scripts\Ranking.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

@@ -1,38 +1,61 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO.Ports;
 
 public class ControladorJogo : NetworkBehaviour
 {
 	[Header("Jogadores")]
-	internal GameObject[] jogadores;
 	public List<GameObject> canvasJogadores;
+	internal GameObject[] jogadores;
+	private List<Jogador> jogadoresScripts = new List<Jogador>();
+	public float delayExibirEstatisticas;
+	public float delayOcultarEstatisticas;
+	public float duracaoAnimacaoCanvas;
+	public float duracaoAnimacaoTempo;
+	public float duracaoAnimacaoConcentracao;
 
 	[Header("Corrida")]
 	public int numeroJogadoresNecessario;
 	public int voltasTotal;
 	[SyncVar] internal bool corridaIniciada;
 	[SyncVar] internal float tempoInicioCorrida;
+	[SyncVar] internal float tempoFinalCorrida;
 	[SyncVar] internal float tempoServidor;
+	internal List<Text> voltasTotalTextJogadores = new List<Text>();
 
-	[Header("Ícones de Sinal")]
-	public Sprite[] iconesSinal;
+	[Header("Vencedor")]
+	public Image vencedorImage;
+	private Animator vencedorAnimator;
+	public List<Sprite> trofeus;
+	internal List<Image> premioImageJogadores = new List<Image>();
 
+	[Header("Fade")]
+	public Animator fadeAnimator;
+	
 	[SyncVar] internal bool jogoIniciado;
 	[SyncVar] internal bool vencedorDeclarado;
 	[SyncVar] internal int vencedorCorrida;
 
-	public Text vencedorText;
-
-	// private float tempoFinalCorrida;
-	// private List<float> tempoVoltas = new List<float>();
+	private ControladorConexoes controladorConexoes;
 
 	void Start()
 	{
+		//if (isServer)
+			fadeAnimator.SetTrigger("FadeIn");
+
+		controladorConexoes = ControladorConexoes.Pegar();
+		controladorConexoes.networkManagerHUD.showGUI = false;
+		
+		int voltasSelecionadas = controladorConexoes.voltasSelecionadas;
+		if (voltasSelecionadas > 0 && voltasSelecionadas != voltasTotal)
+			voltasTotal = voltasSelecionadas;
+		
+		vencedorAnimator = vencedorImage.GetComponent<Animator>();
+		AlterarExibicaoVencedor(false);
+
+		PegarPremioImageJogadores();
+		AtualizarVoltasTotalTextJogadores();
 	}
 
 	void Update()
@@ -54,36 +77,89 @@ public class ControladorJogo : NetworkBehaviour
 		}
 	}
 
+	void AtualizarVoltasTotalTextJogadores()
+	{
+		foreach (GameObject canvasJogador in canvasJogadores)
+		{
+			Transform canvasJogadorCorrida = canvasJogador.transform.FindChild("Corrida");
+			Text voltasTotalTextJogador = canvasJogadorCorrida.FindChild("VoltasTotal").GetComponent<Text>();
+			voltasTotalTextJogador.text = string.Format("/{0:00}", voltasTotal);
+		}
+	}
+
+	void PegarPremioImageJogadores()
+	{
+		foreach (GameObject canvasJogador in canvasJogadores)
+		{
+			Transform canvasJogadorCorrida = canvasJogador.transform.FindChild("Corrida");
+			Image premioImageJogador = canvasJogadorCorrida.FindChild("Prêmio").GetComponent<Image>();
+			premioImageJogadores.Add(premioImageJogador);
+			premioImageJogador.gameObject.SetActive(false);
+		}
+	}
+
 	void AtualizarVencedor()
 	{
-		string mensagemVencedor = "";
 		if (vencedorCorrida > 0)
 		{
-			mensagemVencedor = vencedorCorrida.ToString();
+			if (!vencedorImage.gameObject.activeSelf)
+			{
+				AlterarExibicaoVencedor(true);
+				vencedorAnimator.SetTrigger("AparecerJogador" + vencedorCorrida);
+			}
+			else
+			{
+				vencedorAnimator.ResetTrigger("Jogador" + (vencedorCorrida == 1 ? 2 : 1));
+				vencedorAnimator.SetTrigger("Jogador" + vencedorCorrida);
+			}
 		}
 		else
 		{
-			mensagemVencedor = "Ninguém";
+			vencedorAnimator.Stop();
+			AlterarExibicaoVencedor(false);
 		}
+	}
 
-		vencedorText.text = mensagemVencedor;
+	public void AlterarExibicaoVencedor(bool exibicao)
+	{
+		if (vencedorImage.gameObject.activeSelf != exibicao)
+			vencedorImage.gameObject.SetActive(exibicao);
 	}
 
 	void IniciarJogo()
 	{
 		jogoIniciado = true;
+
+		jogadoresScripts.Clear();
+		foreach (GameObject jogador in jogadores)
+			jogadoresScripts.Add(jogador.GetComponent<Jogador>());
 	}
 
 	public void IniciarCorrida()
 	{
+		vencedorCorrida = 0;
 		vencedorDeclarado = false;
 		corridaIniciada = true;
 		tempoInicioCorrida = Time.time;
+
+		foreach (Jogador jogadorScript in jogadoresScripts)
+		{
+			jogadorScript.OcultarEstatisticas();
+			jogadorScript.estatisticasLiberadas = true;
+			jogadorScript.ZerarEstatisticas();
+			jogadorScript.PrepararInicioCorrida();
+		}
 	}
 
 	public void EncerrarCorrida()
 	{
+		tempoFinalCorrida = Time.time;
+		ChecarVencedorParcial();
+		AtualizarVencedor();
 		corridaIniciada = false;
+
+		foreach (Jogador jogadorScript in jogadoresScripts)
+			jogadorScript.CalcularEstatisticasConcentracao();
 	}
 
 	public void DeclararVencedor(int vencedor)
@@ -109,142 +185,8 @@ public class ControladorJogo : NetworkBehaviour
 			vencedorCorrida = 0;
 	}
 
-	/*int PegarIdJogador(string nome)
-	{
-		return nome.Contains("1") ? 0 : 1;
-	}*/
-
 	static public ControladorJogo Pegar()
 	{
 		return GameObject.Find("ControladorJogo").GetComponent<ControladorJogo>();
 	}
-	/*
-	private GameObject[] jogadores;
-	public List<GameObject> canvasJogadores;
-	public int numeroJogadoresNecessario;
-
-	public Sprite[] iconesSinal;
-
-	private bool jogoIniciado;
-
-	private GameObject networkManager;
-	
-	public int voltasTotal;
-
-	private bool corridaIniciada;
-	private float tempoInicioCorrida;
-	// private float tempoFinalCorrida;
-	// private List<float> tempoVoltas = new List<float>();
-
-	private List<Text> voltasTextJogadores = new List<Text>();
-	private List<Text> tempoTextJogadores = new List<Text>();
-	private List<Text> concentracaoTextJogadores = new List<Text>();
-	private List<Image> sinalImageJogadores = new List<Image>();
-	private List<Jogador> scriptJogadores = new List<Jogador>();
-
-	void Start()
-	{
-		EsconderNetworkHUD();
-	}
-
-	void Update()
-	{
-		if (!jogoIniciado)
-		{
-			jogadores = GameObject.FindGameObjectsWithTag("Player");
-
-			if (jogadores.Length == numeroJogadoresNecessario)
-				IniciarJogo();
-		}
-		else if (corridaIniciada)
-		{
-			AtualizarJogadores();
-		}
-	}
-
-	void IniciarJogo()
-	{
-		foreach (GameObject canvasJogador in canvasJogadores)
-		{
-			int idJogador = PegarIdJogador(canvasJogador.name);
-
-			// Apenas durante os testes pra rodar com um player só e não dar erro
-			if (jogadores.Length - 1 < idJogador)
-				continue;
-
-			Text voltasText = canvasJogador.transform.FindChild("Voltas").GetComponent<Text>();
-			Text tempoText = canvasJogador.transform.FindChild("Tempo").GetComponent<Text>();
-			Text concentracaoText = canvasJogador.transform.FindChild("Concentração").GetComponent<Text>();
-			Image sinalImage = canvasJogador.transform.FindChild("Sinal").GetComponent<Image>();
-
-			Jogador jogadorScript = jogadores[idJogador].GetComponent<Jogador>();
-
-			voltasTextJogadores.Add(voltasText);
-			tempoTextJogadores.Add(tempoText);
-			concentracaoTextJogadores.Add(concentracaoText);
-			sinalImageJogadores.Add(sinalImage);
-
-			scriptJogadores.Add(jogadorScript);
-		}
-
-		jogoIniciado = true;
-	}
-
-	public void IniciarCorrida()
-	{
-		if (corridaIniciada)
-			return;
-
-		corridaIniciada = true;
-		tempoInicioCorrida = Time.time;
-
-		// inicioCorrida = Time.time;
-
-		Debug.Log("IniciarCorrida");
-	}
-
-	int PegarIdJogador(string nome)
-	{
-		return nome.Contains("1") ? 0 : 1;
-	}
-
-	void AtualizarJogadores()
-	{
-		Debug.Log("Atualizar Jogadores");
-		foreach (GameObject canvasJogador in canvasJogadores)
-		{
-			int idJogador = PegarIdJogador(canvasJogador.name);
-			
-			// Apenas durante os testes pra rodar com um player só e não dar erro
-			if (jogadores.Length - 1 < idJogador)
-				continue;
-
-			Text voltasText = voltasTextJogadores[idJogador];
-			Text tempoText = tempoTextJogadores[idJogador];
-			Text concentracaoText = concentracaoTextJogadores[idJogador];
-			Image sinalImage = sinalImageJogadores[idJogador];
-			Jogador jogadorScript = scriptJogadores[idJogador];
-
-			TimeSpan tempo = TimeSpan.FromSeconds(Time.time - tempoInicioCorrida);
-
-			voltasText.text = jogadorScript.voltas + "/" + controladorJogo.voltasTotal;
-			tempoText.text = string.Format("{0:00}:{1:00}:{2:00}", tempo.Minutes, tempo.Seconds, tempo.Milliseconds / 10);
-			concentracaoText.text = jogadorScript.concentracao.ToString() + "%";
-			sinalImage.sprite = iconesSinal[jogadorScript.indexIconeSinal];
-		}
-	}
-
-	void EsconderNetworkHUD()
-	{
-		networkManager = GameObject.Find("Network Manager");
-
-		if (networkManager)
-			networkManager.GetComponent<NetworkManagerHUD>().showGUI = false;
-	}
-
-	static public ControladorJogo Pegar()
-	{
-		return GameObject.Find("ControladorJogo").GetComponent<ControladorJogo>();
-	}
-	*/
 }

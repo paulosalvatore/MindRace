@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/TelaInicial.unity
+- path: Assets/Scenes/Jogo.unity
   isLoaded: 1
   isActive: 1
