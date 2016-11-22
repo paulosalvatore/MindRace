@@ -27,6 +27,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Documents\Arduino\libraries\SimpleTimer\SimpleTimer.h" />
+    <ClInclude Include="..\Libraries\Adafruit_NeoPixel\Adafruit_NeoPixel.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Autorama.rc">
@@ -35,5 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\Documents\Arduino\libraries\SimpleTimer\SimpleTimer.cpp" />
+    <ClCompile Include="..\Libraries\Adafruit_NeoPixel\Adafruit_NeoPixel.cpp" />
   </ItemGroup>
 </Project>

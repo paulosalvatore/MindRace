@@ -66,6 +66,7 @@ apenas no posicionamento automático, onde os valores de duração da energização s
 */
 
 #include <SimpleTimer.h>
+#include <Adafruit_NeoPixel.h>
 
 SimpleTimer simpleTimer;
 
@@ -87,8 +88,11 @@ int ledConcentracao = 10;
 int ledEmergencia = 9;
 int ledVoltas = 8;
 int ledPosicionamento = 7;
-int ledPistaExterna = 6;
-int ledPistaInterna = 5;
+int fitaLed = 6;
+
+// int ledPistaExterna = 6;
+// int ledPistaInterna = 5;
+
 
 bool corridaIniciada = false;
 
@@ -115,7 +119,10 @@ float delayUltimaConcentracao = 10000;
 bool ledConcentracaoLigado = false;
 int variacaoConcentracaoAleatoria[] = {10, 41};
 
-int energizarIntervalo[] = {50, 84};
+int energizarIntervalo[2][2] = {
+	{62, 86},
+	{60, 84}
+};
 int energizacaoFixa = 0;
 
 unsigned long tempoAtual;
@@ -125,8 +132,8 @@ float delayAtualizacao = 2000;
 bool botaoPosicionamentoLiberado = false;
 bool posicionamentoLiberado = false;
 bool posicionamentoIniciado = false;
-int valorPosicionamentoAutomatico[] = {65, 65};
-int duracaoPosicionamentoAutomatico[] = {1500, 0};
+int valorPosicionamentoAutomatico[] = {69, 62};
+int duracaoPosicionamentoAutomatico[] = {600, 0};
 int delayAposEtapa1 = 500;
 unsigned long tempoEnergizacao;
 float delayEnergizacao;
@@ -137,6 +144,13 @@ int valoresRecebidos[3];
 unsigned long tempoUltimoValorRecebido;
 float delayUltimoValorRecebido = 100;
 int quantidadeValoresRecebidos;
+
+int totalLedsFita[] = {24, 24};
+int coresLedsFita[2][3] = {
+	{255, 0, 0},
+	{0, 255, 0}
+};
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(24, fitaLed, NEO_RGB + NEO_KHZ800);
 
 void AtualizarLedsStatus()
 {
@@ -163,13 +177,18 @@ void setup()
 	pinMode(ledEmergencia, OUTPUT);
 	pinMode(ledVoltas, OUTPUT);
 	pinMode(ledPosicionamento, OUTPUT);
-	pinMode(ledPistaExterna, OUTPUT);
-	pinMode(ledPistaInterna, OUTPUT);
+	pinMode(fitaLed, OUTPUT);
+
+	// pinMode(ledPistaExterna, OUTPUT);
+	// pinMode(ledPistaInterna, OUTPUT);
 
 	Serial.begin(9600);
+	strip.begin();
 
 	AtualizarLedsStatus();
-	AtualizarLedPistaSelecionada();
+	// AtualizarLedPistaSelecionada();
+
+	simpleTimer.setInterval(1000, AtualizarFitaLed);
 }
 
 void AtualizarLedEmergencia()
@@ -208,10 +227,24 @@ void AtualizarLedPosicionamento(bool desligar = false)
 	digitalWrite(ledPosicionamento, posicionamentoIniciado ? HIGH : LOW);
 }
 
+/*
 void AtualizarLedPistaSelecionada()
 {
 	digitalWrite(ledPistaExterna, pistaSelecionada == 0 ? HIGH : LOW);
 	digitalWrite(ledPistaInterna, pistaSelecionada == 1 ? HIGH : LOW);
+}
+*/
+
+void AtualizarFitaLed()
+{
+	for (int i = 0; i < totalLedsFita[pistaSelecionada]; i++)
+	{
+		int index = totalLedsFita[pistaSelecionada] - i;
+		uint32_t cor = (concentracao == 0 || index > concentracao * totalLedsFita[pistaSelecionada] / 100 ? strip.Color(0, 0, 0) : strip.Color(coresLedsFita[pistaSelecionada][0], coresLedsFita[pistaSelecionada][1], coresLedsFita[pistaSelecionada][2]));
+		strip.setPixelColor(i, cor);
+	}
+
+	strip.show();
 }
 
 void ExibirVoltas()
@@ -239,6 +272,9 @@ void EncerrarCorrida()
 void ContarVoltas()
 {
 	voltas++;
+
+	if (voltas < 0)
+		voltas = 1;
 
 	ExibirVoltas();
 
@@ -283,7 +319,7 @@ void ChecarPistaSelecionada()
 	if (leituraSelecaoPista != pistaSelecionada)
 	{
 		pistaSelecionada = leituraSelecaoPista;
-		AtualizarLedPistaSelecionada();
+		// AtualizarLedPistaSelecionada();
 	}
 }
 
@@ -356,7 +392,7 @@ void ChecarRecebimentoSerial()
 	{
 		int dadoRecebido = Serial.read();
 
-		if (dadoRecebido == 97)
+		if (dadoRecebido == 99)
 			ChecarConexaoUnity(dadoRecebido);
 		else
 		{
@@ -424,8 +460,8 @@ void EnergizarPista()
 		if (emergenciaAtivado)
 			concentracao = concentracaoAleatoria;
 
-		int energizacaoIntervaloReal = energizarIntervalo[1] - energizarIntervalo[0];
-		energia = corridaIniciada ? max(energizarIntervalo[0], min(energizarIntervalo[1], energizarIntervalo[0] + concentracao * energizacaoIntervaloReal / 100)) : 0;
+		int energizacaoIntervaloReal = energizarIntervalo[pistaSelecionada][1] - energizarIntervalo[pistaSelecionada][0];
+		energia = corridaIniciada ? max(energizarIntervalo[pistaSelecionada][0], min(energizarIntervalo[pistaSelecionada][1], energizarIntervalo[pistaSelecionada][0] + concentracao * energizacaoIntervaloReal / 100)) : 0;
 	}
 
 	if (tempoEnergizacao > 0 && tempoAtual > tempoEnergizacao + delayEnergizacao)
@@ -499,8 +535,7 @@ void ChecarPosicionamentoAutomatico()
 
 void ChecarConexaoUnity(int dadoRecebido)
 {
-	if (dadoRecebido == 99)
-		Serial.println(dadoRecebido);
+	// Serial.println(dadoRecebido);
 }
 
 void loop()
