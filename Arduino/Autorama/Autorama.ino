@@ -1,67 +1,54 @@
-/*
+Ôªø/*
 
 MindRace - Software do Arduino - Desenvolvido por Paulo Salvatore
-
-
-VIS√O GERAL
-
-- O programa inicia em um estado neutro, aguardando aÁ„o do bot„o de inÌcio.
-
-- Ao acionar o bot„o de inÌcio, o programa ir· iniciar uma corrida.
-
-- A energizaÁ„o da pista se basear· nos valores que o programa recebe pela porta serial.
-
-- Caso a comunicaÁ„o entre o programa conectado ao MindWave e o arduino estiver comprometida, È possÌvel acionar
-o bot„o de emergÍncia para que o programa comece a gerar valores aleatÛrios e energize a pista com base neles.
-
-- Um outro sensor ir· efetuar o trabalho de contagem das voltas, sempre que o sensor for acionado, o programa ir·
-contabilizar uma volta. Ao atingir o limite de voltas a corrida ser· finalizada e o programa ir· retornar ao status
-inicial.	Mesmo que o sensor continue ativo diversas vezes seguidamente, ele sÛ ir· aceitar um novo valor quando
-entrar em estado inativo. Exemplo: Se o carrinho parar na frente do sensor, enviando constantemente uma informaÁ„o,
-o sensor ir· considerar aquilo como apenas uma informaÁ„o e sÛ ir· liberar uma nova entrada de informaÁ„o quando o
+VIS√ÉO GERAL
+- O programa inicia em um estado neutro, aguardando a√ß√£o do bot√£o de in√≠cio.
+- Ao acionar o bot√£o de in√≠cio, o programa ir√° iniciar uma corrida.
+- A energiza√ß√£o da pista se basear√° nos valores que o programa recebe pela porta serial.
+- Caso a comunica√ß√£o entre o programa conectado ao MindWave e o arduino estiver comprometida, √© poss√≠vel acionar
+o bot√£o de emerg√™ncia para que o programa comece a gerar valores aleat√≥rios e energize a pista com base neles.
+- Um outro sensor ir√° efetuar o trabalho de contagem das voltas, sempre que o sensor for acionado, o programa ir√°
+contabilizar uma volta. Ao atingir o limite de voltas a corrida ser√° finalizada e o programa ir√° retornar ao status
+inicial.	Mesmo que o sensor continue ativo diversas vezes seguidamente, ele s√≥ ir√° aceitar um novo valor quando
+entrar em estado inativo. Exemplo: Se o carrinho parar na frente do sensor, enviando constantemente uma informa√ß√£o,
+o sensor ir√° considerar aquilo como apenas uma informa√ß√£o e s√≥ ir√° liberar uma nova entrada de informa√ß√£o quando o
 carrinho sair da frente do sensor.
-
-- O programa ir· imprimir o n˙mero da volta atual na porta serial sempre que:
+- O programa ir√° imprimir o n√∫mero da volta atual na porta serial sempre que:
 A corrida for iniciada;
-O n˙mero da volta conforme o sensor de voltas for alterado;
+O n√∫mero da volta conforme o sensor de voltas for alterado;
 A corrida for finalizada.
-
-- Caso nenhuma corrida esteja ativa, È possÌvel iniciar o posicionamento autom·tico dos carrinhos. Baseado em qual
-pista est· selecionada (externa ou interna), ao pressionar o bot„o de posicionamento, o carrinho ir· atÈ o sensor,
-ficar· parado por um pequeno perÌodo de tempo e iniciar· o movimento novamente por um certo perÌodo de tempo atÈ
-que pare na posiÁ„o desejada.
-OBS.: Para ajustar a posiÁ„o de parada, È necess·rio mexer na duraÁ„o da energizaÁ„o da pista durante o posicionamento
-atravÈs da vari·vel array duracaoPosicionamentoAutomatico[] - Sendo que o primeiro valor È da posiÁ„o externa e o
-segundo È da posiÁ„o interna. TambÈm È possÌvel mexer na velocidade do carrinho atravÈs da vari·vel array
-valorPosicionamentoAutomatico[] - seguindo as mesmas posiÁıes citadas acima para os valores de cada pista.
-
-
+- Caso nenhuma corrida esteja ativa, √© poss√≠vel iniciar o posicionamento autom√°tico dos carrinhos. Baseado em qual
+pista est√° selecionada (externa ou interna), ao pressionar o bot√£o de posicionamento, o carrinho ir√° at√© o sensor,
+ficar√° parado por um pequeno per√≠odo de tempo e iniciar√° o movimento novamente por um certo per√≠odo de tempo at√©
+que pare na posi√ß√£o desejada.
+OBS.: Para ajustar a posi√ß√£o de parada, √© necess√°rio mexer na dura√ß√£o da energiza√ß√£o da pista durante o posicionamento
+atrav√©s da vari√°vel array duracaoPosicionamentoAutomatico[] - Sendo que o primeiro valor √© da posi√ß√£o externa e o
+segundo √© da posi√ß√£o interna. Tamb√©m √© poss√≠vel mexer na velocidade do carrinho atrav√©s da vari√°vel array
+valorPosicionamentoAutomatico[] - seguindo as mesmas posi√ß√µes citadas acima para os valores de cada pista.
 LEDs DE CONTROLE
-
 Existem 8 LEDs que indicam o status de alguns componentes do circuito:
-
 - LED Verde - Status - Corrida Ativa
-Quando tiver uma corrida ativa, esse LED ir· ficar aceso.
+Quando tiver uma corrida ativa, esse LED ir√° ficar aceso.
 - LED Vermelho - Status - Nenhuma Corrida Ativa
-Quando n„o tiver nenhuma corrida ativa, esse LED ir· ficar aceso.
-- LED Laranja - ConcentraÁ„o - ⁄ltima ConcentraÁ„o V·lida
-Quando o programa receber um valor de concentraÁ„o via porta serial, esse LED ir· acender enquanto esse valor
-estiver ativo, caso um novo valor n„o seja recebido em um certo prazo de segundos, esse LED ir· apagar e o
-valor de concentraÁ„o ser· zerado.
-- LED Amarelo - EmergÍncia - Estado de EmergÍncia acionado
-Quando a chave de emergÍncia for acionada esse LED ir· ficar aceso para representar que o estado de emergÍncia
-est· acionado na pista.
+Quando n√£o tiver nenhuma corrida ativa, esse LED ir√° ficar aceso.
+- LED Laranja - Concentra√ß√£o - √öltima Concentra√ß√£o V√°lida
+Quando o programa receber um valor de concentra√ß√£o via porta serial, esse LED ir√° acender enquanto esse valor
+estiver ativo, caso um novo valor n√£o seja recebido em um certo prazo de segundos, esse LED ir√° apagar e o
+valor de concentra√ß√£o ser√° zerado.
+- LED Amarelo - Emerg√™ncia - Estado de Emerg√™ncia acionado
+Quando a chave de emerg√™ncia for acionada esse LED ir√° ficar aceso para representar que o estado de emerg√™ncia
+est√° acionado na pista.
 - LED Azul - Sensor - Estado do Sensor
-Enquanto o sensor estiver obtendo algum valor esse LED ir· ficar aceso. Assim que o sensor parar de emitir
-sinal, o LED apagar·. Enquanto o LED estiver ligado, n„o È possÌvel contabilizar novas voltas na pista.
-- LED Amarelo - Posicionamento Autom·tico
-Quando o bot„o de posicionamento autom·tico for pressionado, o LED ir· ficar aceso, caso contr·rio, ele ficar· apagado.
+Enquanto o sensor estiver obtendo algum valor esse LED ir√° ficar aceso. Assim que o sensor parar de emitir
+sinal, o LED apagar√°. Enquanto o LED estiver ligado, n√£o √© poss√≠vel contabilizar novas voltas na pista.
+- LED Amarelo - Posicionamento Autom√°tico
+Quando o bot√£o de posicionamento autom√°tico for pressionado, o LED ir√° ficar aceso, caso contr√°rio, ele ficar√° apagado.
 - LED Laranja - Pista Externa Selecionada
-Quando esse LED estiver aceso, significa que o arduino est· programado para funcionar na pista externa, isso implicar·
-apenas no posicionamento autom·tico, onde os valores de duraÁ„o da energizaÁ„o s„o diferentes para cada pista.
+Quando esse LED estiver aceso, significa que o arduino est√° programado para funcionar na pista externa, isso implicar√°
+apenas no posicionamento autom√°tico, onde os valores de dura√ß√£o da energiza√ß√£o s√£o diferentes para cada pista.
 - LED Amarelo - Pista Interna Selecionada
-Quando esse LED estiver aceso, significa que o arduino est· programado para funcionar na pista interna, isso implicar·
-apenas no posicionamento autom·tico, onde os valores de duraÁ„o da energizaÁ„o s„o diferentes para cada pista.
+Quando esse LED estiver aceso, significa que o arduino est√° programado para funcionar na pista interna, isso implicar√°
+apenas no posicionamento autom√°tico, onde os valores de dura√ß√£o da energiza√ß√£o s√£o diferentes para cada pista.
 
 */
 
@@ -558,6 +545,4 @@ void loop()
 	AtualizarConcentracaoAleatoria();
 
 	EnergizarPista();
-
-	delay(1); // Apenas para controlar o tempo de execuÁ„o do programa
 }
