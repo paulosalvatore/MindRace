@@ -75,11 +75,11 @@ int ledConcentracao = 10;
 int ledEmergencia = 9;
 int ledVoltas = 8;
 int ledPosicionamento = 7;
-int fitaLed = 6;
 
-// int ledPistaExterna = 6;
-// int ledPistaInterna = 5;
+int fitaLed = A5;
 
+int ledPistaExterna = 6;
+int ledPistaInterna = 5;
 
 bool corridaIniciada = false;
 
@@ -93,18 +93,18 @@ unsigned long tempoSensor;
 float delaySensor = 500;
 
 int voltas = 0;
-int maxVoltas = 3;
+int maxVoltas = 6;
 unsigned long tempoLedVoltas;
 int contadorSensorVoltas;
 int contadorNecessarioSensorVoltas = 5;
 
 int concentracao = 0;
 int concentracaoAleatoria = 0;
-int concentracaoIntervalo[] = {0, 100};
+int concentracaoIntervalo[] = { 0, 100 };
 unsigned long tempoUltimaConcentracaoRecebida;
 float delayUltimaConcentracao = 10000;
 bool ledConcentracaoLigado = false;
-int variacaoConcentracaoAleatoria[] = {10, 41};
+int variacaoConcentracaoAleatoria[] = { 10, 41 };
 
 int energizarIntervalo[2][2] = {
 	{62, 86},
@@ -119,8 +119,8 @@ float delayAtualizacao = 2000;
 bool botaoPosicionamentoLiberado = false;
 bool posicionamentoLiberado = false;
 bool posicionamentoIniciado = false;
-int valorPosicionamentoAutomatico[] = {69, 62};
-int duracaoPosicionamentoAutomatico[] = {600, 0};
+int valorPosicionamentoAutomatico[] = { 69, 62 };
+int duracaoPosicionamentoAutomatico[] = { 600, 0 };
 int delayAposEtapa1 = 500;
 unsigned long tempoEnergizacao;
 float delayEnergizacao;
@@ -132,12 +132,13 @@ unsigned long tempoUltimoValorRecebido;
 float delayUltimoValorRecebido = 100;
 int quantidadeValoresRecebidos;
 
-int totalLedsFita[] = {24, 24};
+int totalLedsFita[] = { 9, 9 };
 int coresLedsFita[2][3] = {
 	{255, 0, 0},
 	{0, 255, 0}
 };
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(24, fitaLed, NEO_RGB + NEO_KHZ800);
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(9, fitaLed, NEO_RGB + NEO_KHZ800);
 
 void AtualizarLedsStatus()
 {
@@ -164,16 +165,17 @@ void setup()
 	pinMode(ledEmergencia, OUTPUT);
 	pinMode(ledVoltas, OUTPUT);
 	pinMode(ledPosicionamento, OUTPUT);
+
 	pinMode(fitaLed, OUTPUT);
 
-	// pinMode(ledPistaExterna, OUTPUT);
-	// pinMode(ledPistaInterna, OUTPUT);
+	pinMode(ledPistaExterna, OUTPUT);
+	pinMode(ledPistaInterna, OUTPUT);
 
 	Serial.begin(9600);
 	strip.begin();
 
 	AtualizarLedsStatus();
-	// AtualizarLedPistaSelecionada();
+	AtualizarLedPistaSelecionada();
 
 	simpleTimer.setInterval(1000, AtualizarFitaLed);
 }
@@ -214,13 +216,11 @@ void AtualizarLedPosicionamento(bool desligar = false)
 	digitalWrite(ledPosicionamento, posicionamentoIniciado ? HIGH : LOW);
 }
 
-/*
 void AtualizarLedPistaSelecionada()
 {
 	digitalWrite(ledPistaExterna, pistaSelecionada == 0 ? HIGH : LOW);
 	digitalWrite(ledPistaInterna, pistaSelecionada == 1 ? HIGH : LOW);
 }
-*/
 
 void AtualizarFitaLed()
 {
@@ -228,6 +228,7 @@ void AtualizarFitaLed()
 	{
 		int index = totalLedsFita[pistaSelecionada] - i;
 		uint32_t cor = (concentracao == 0 || index > concentracao * totalLedsFita[pistaSelecionada] / 100 ? strip.Color(0, 0, 0) : strip.Color(coresLedsFita[pistaSelecionada][0], coresLedsFita[pistaSelecionada][1], coresLedsFita[pistaSelecionada][2]));
+
 		strip.setPixelColor(i, cor);
 	}
 
@@ -306,7 +307,7 @@ void ChecarPistaSelecionada()
 	if (leituraSelecaoPista != pistaSelecionada)
 	{
 		pistaSelecionada = leituraSelecaoPista;
-		// AtualizarLedPistaSelecionada();
+		AtualizarLedPistaSelecionada();
 	}
 }
 
@@ -414,7 +415,7 @@ void ValidarRecebimentoSerial()
 
 void AtualizarConcentracao(int valor)
 {
-	concentracao = valor;
+	concentracao = constrain(valor, 0, 100);
 	PiscarLedConcentracao();
 	tempoUltimaConcentracaoRecebida = tempoAtual;
 }
