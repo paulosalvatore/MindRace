@@ -14,18 +14,35 @@ public class Jogador : NetworkBehaviour
 	private TGCConnectionController controladorNeuroSky;
 	private SerialPort arduino;
 
-	[SyncVar] internal int voltas;
-	[SyncVar] internal int concentracao;
-	[SyncVar] internal int indexIconeSinal = 1;
-	[SyncVar] internal SyncListInt concentracaoLista = new SyncListInt();
+	[SyncVar]
+	internal int voltas;
 
-	[SyncVar] internal SyncListFloat tempoVoltas = new SyncListFloat();
+	[SyncVar]
+	internal int concentracao;
 
-	[SyncVar] internal int concentracaoMedia;
-	[SyncVar] internal int concentracaoMenor;
-	[SyncVar] internal int concentracaoMaior;
-	[SyncVar] internal bool exibindoEstatisticas = false;
-	[SyncVar] internal bool estatisticasLiberadas = true;
+	[SyncVar]
+	internal int indexIconeSinal = 1;
+
+	[SyncVar]
+	internal SyncListInt concentracaoLista = new SyncListInt();
+
+	[SyncVar]
+	internal SyncListFloat tempoVoltas = new SyncListFloat();
+
+	[SyncVar]
+	internal int concentracaoMedia;
+
+	[SyncVar]
+	internal int concentracaoMenor;
+
+	[SyncVar]
+	internal int concentracaoMaior;
+
+	[SyncVar]
+	internal bool exibindoEstatisticas = false;
+
+	[SyncVar]
+	internal bool estatisticasLiberadas = true;
 
 	internal int idJogador;
 
@@ -50,7 +67,7 @@ public class Jogador : NetworkBehaviour
 	private Text estatisticasConcentracaoMediaText;
 	private Image estatisticasConcentracaoMediaImage;
 
-	void Start()
+	private void Start()
 	{
 		controladorJogo = ControladorJogo.Pegar();
 		controladorConexoes = ControladorConexoes.Pegar();
@@ -76,14 +93,14 @@ public class Jogador : NetworkBehaviour
 			StartCoroutine
 			(
 				LerArduino((string s) => CmdContabilizarVolta(s))
-				// LerArduino((string s) => Debug.Log(s))
+			// LerArduino((string s) => Debug.Log(s))
 			);
 		}
 
 		StartCoroutine(GravarArduino());
 	}
 
-	void Update()
+	private void Update()
 	{
 		if (isServer && isLocalPlayer)
 		{
@@ -123,7 +140,7 @@ public class Jogador : NetworkBehaviour
 		ChecarExibirEstatisticas();
 	}
 
-	void ChecarExibirEstatisticas()
+	private void ChecarExibirEstatisticas()
 	{
 		if (!estatisticasLiberadas || exibindoEstatisticas || controladorJogo.corridaIniciada || (!controladorJogo.corridaIniciada && !controladorJogo.vencedorDeclarado))
 			return;
@@ -132,7 +149,7 @@ public class Jogador : NetworkBehaviour
 			ExibirEstatisticas();
 	}
 
-	void PegarElementosCanvas()
+	private void PegarElementosCanvas()
 	{
 		int indexJogador = idJogador - 1;
 
@@ -165,12 +182,12 @@ public class Jogador : NetworkBehaviour
 		estatisticasConcentracaoMediaImage = estatisticasCanvasConcentracao.FindChild("Média").FindChild("ArcoPreenchimento").GetComponent<Image>();
 	}
 
-	Vector2 PegarAnchoredPosition(GameObject elemento)
+	private Vector2 PegarAnchoredPosition(GameObject elemento)
 	{
 		return elemento.GetComponent<RectTransform>().anchoredPosition;
 	}
 
-	void MoverCanvasJogadorCorrida(Vector2 posicao, float duracao)
+	private void MoverCanvasJogadorCorrida(Vector2 posicao, float duracao)
 	{
 		Vector2 anchoredPosition = PegarAnchoredPosition(canvasJogadorCorrida.gameObject);
 		iTween.ValueTo(canvasJogadorCorrida.gameObject, iTween.Hash(
@@ -183,12 +200,12 @@ public class Jogador : NetworkBehaviour
 		);
 	}
 
-	void MoverCanvasElementoCorrida(Vector2 posicao)
+	private void MoverCanvasElementoCorrida(Vector2 posicao)
 	{
 		canvasJogadorCorrida.gameObject.GetComponent<RectTransform>().anchoredPosition = posicao;
 	}
 
-	void MoverCanvasJogadorEstatisticas(Vector2 posicao, float duracao)
+	private void MoverCanvasJogadorEstatisticas(Vector2 posicao, float duracao)
 	{
 		Vector2 anchoredPosition = PegarAnchoredPosition(canvasJogadorEstatisticas.gameObject);
 		iTween.ValueTo(canvasJogadorEstatisticas.gameObject, iTween.Hash(
@@ -201,12 +218,12 @@ public class Jogador : NetworkBehaviour
 		);
 	}
 
-	void MoverCanvasElementoEstatisticas(Vector2 posicao)
+	private void MoverCanvasElementoEstatisticas(Vector2 posicao)
 	{
 		canvasJogadorEstatisticas.gameObject.GetComponent<RectTransform>().anchoredPosition = posicao;
 	}
 
-	void AtualizarConcentracaoJogador()
+	private void AtualizarConcentracaoJogador()
 	{
 		float quantidade = arcoPreenchimentoImage.fillAmount;
 		arcoPreenchimentoImage.fillAmount = quantidade = Mathf.Lerp(quantidade, concentracao / 100f, Time.deltaTime);
@@ -215,13 +232,13 @@ public class Jogador : NetworkBehaviour
 		sinalImage.sprite = controladorConexoes.iconesSinal[indexIconeSinal];
 	}
 
-	string FormatarTempoCorrida(float tempo)
+	private string FormatarTempoCorrida(float tempo)
 	{
 		TimeSpan timeSpan = TimeSpan.FromSeconds(tempo);
 		return string.Format("{0:00}'{1:00}\"{2:000}", timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
 	}
 
-	void AtualizarJogador()
+	private void AtualizarJogador()
 	{
 		if ((controladorJogo.corridaIniciada && controladorJogo.vencedorDeclarado && controladorJogo.vencedorCorrida != idJogador) ||
 			(controladorJogo.corridaIniciada && !controladorJogo.vencedorDeclarado))
@@ -243,7 +260,7 @@ public class Jogador : NetworkBehaviour
 		voltasAtualText.text = string.Format("{0:00}", voltas);
 	}
 
-	float PegarMelhorTempo()
+	private float PegarMelhorTempo()
 	{
 		float melhorTempo = 0;
 		for (int i = 0; i < tempoVoltas.Count; i++)
@@ -256,7 +273,7 @@ public class Jogador : NetworkBehaviour
 		return melhorTempo;
 	}
 
-	void AlterarExibicaoPremio(bool exibicao)
+	private void AlterarExibicaoPremio(bool exibicao)
 	{
 		if (premioImage.gameObject.activeSelf != exibicao)
 			premioImage.gameObject.SetActive(exibicao);
@@ -274,8 +291,17 @@ public class Jogador : NetworkBehaviour
 	}
 
 	[Command]
-	void CmdContabilizarVolta(string s)
+	private void CmdContabilizarVolta(string s)
 	{
+		Debug.Log(s);
+
+		if (s == "p")
+		{
+			controladorJogo.AlterarPosicionamento();
+
+			return;
+		}
+
 		try
 		{
 			voltas = int.Parse(s);
@@ -309,24 +335,24 @@ public class Jogador : NetworkBehaviour
 		catch (FormatException) { }
 	}
 
-	void OnUpdateSinal(int valor)
+	private void OnUpdateSinal(int valor)
 	{
 		CmdAtualizarSinal(valor);
 	}
 
 	[Command]
-	void CmdAtualizarSinal(int valor)
+	private void CmdAtualizarSinal(int valor)
 	{
 		indexIconeSinal = controladorConexoes.PegarIndexIconeSinal(valor);
 	}
 
-	void OnUpdateConcentracao(int valor)
+	private void OnUpdateConcentracao(int valor)
 	{
 		CmdAtualizarConcentracao(valor);
 	}
 
 	[Command]
-	void CmdAtualizarConcentracao(int valor)
+	private void CmdAtualizarConcentracao(int valor)
 	{
 		concentracao = valor;
 
@@ -356,7 +382,7 @@ public class Jogador : NetworkBehaviour
 			concentracaoMedia = concentracaoTotal / concentracaoLista.Count;
 	}
 
-	void ExibirEstatisticas(bool inserirDados = true)
+	private void ExibirEstatisticas(bool inserirDados = true)
 	{
 		if (exibindoEstatisticas)
 			return;
@@ -372,12 +398,12 @@ public class Jogador : NetworkBehaviour
 			Invoke("InserirDadosEstatisticas", duracao * 3);
 	}
 
-	void InserirDadosEstatisticas()
+	private void InserirDadosEstatisticas()
 	{
 		Invoke("InserirTempoTotal", controladorJogo.duracaoAnimacaoTempo);
 	}
 
-	void InserirTempoTotal()
+	private void InserirTempoTotal()
 	{
 		if (tempoVoltas.Count == controladorJogo.voltasTotal)
 		{
@@ -389,7 +415,7 @@ public class Jogador : NetworkBehaviour
 		Invoke("InserirMelhorVolta", controladorJogo.duracaoAnimacaoTempo);
 	}
 
-	void InserirMelhorVolta()
+	private void InserirMelhorVolta()
 	{
 		float melhorVolta = PegarMelhorTempo();
 		// estatisticasMelhorVoltaText.text = FormatarTempoCorrida(melhorVolta);
@@ -397,7 +423,7 @@ public class Jogador : NetworkBehaviour
 		Invoke("InserirConcentracaoMenor", controladorJogo.duracaoAnimacaoConcentracao);
 	}
 
-	IEnumerator InserirTempo(float valor, Text text)
+	private IEnumerator InserirTempo(float valor, Text text)
 	{
 		float valorInserido = 0f;
 
@@ -409,25 +435,25 @@ public class Jogador : NetworkBehaviour
 		}
 	}
 
-	void InserirConcentracaoMenor()
+	private void InserirConcentracaoMenor()
 	{
 		StartCoroutine(InserirConcentracao(concentracaoMenor, estatisticasConcentracaoMenorImage, estatisticasConcentracaoMenorText));
 		Invoke("InserirConcentracaoMaior", controladorJogo.duracaoAnimacaoConcentracao);
 	}
 
-	void InserirConcentracaoMaior()
+	private void InserirConcentracaoMaior()
 	{
 		StartCoroutine(InserirConcentracao(concentracaoMaior, estatisticasConcentracaoMaiorImage, estatisticasConcentracaoMaiorText));
 		Invoke("InserirConcentracaoMedia", controladorJogo.duracaoAnimacaoConcentracao);
 	}
 
-	void InserirConcentracaoMedia()
+	private void InserirConcentracaoMedia()
 	{
 		StartCoroutine(InserirConcentracao(concentracaoMedia, estatisticasConcentracaoMediaImage, estatisticasConcentracaoMediaText));
 		Invoke("OcultarEstatisticas", controladorJogo.delayOcultarEstatisticas);
 	}
 
-	IEnumerator InserirConcentracao(float valor, Image image, Text text)
+	private IEnumerator InserirConcentracao(float valor, Image image, Text text)
 	{
 		float quantidade = image.fillAmount;
 
@@ -445,7 +471,7 @@ public class Jogador : NetworkBehaviour
 		OcultarEstatisticas(true);
 	}
 
-	void OcultarEstatisticas(bool prepararInicioCorrida)
+	private void OcultarEstatisticas(bool prepararInicioCorrida)
 	{
 		if (!exibindoEstatisticas)
 			return;
@@ -460,14 +486,14 @@ public class Jogador : NetworkBehaviour
 			PrepararInicioCorrida();
 	}
 
-	void ExibirCanvasCorrida()
+	private void ExibirCanvasCorrida()
 	{
 		Vector2 posicao = posicaoInicialCanvasCorrida;
 		float duracao = controladorJogo.duracaoAnimacaoCanvas;
 		MoverCanvasJogadorCorrida(posicao, duracao);
 	}
 
-	void ExibirCanvasEstatisticas()
+	private void ExibirCanvasEstatisticas()
 	{
 		Vector2 posicao = posicaoInicialCanvasCorrida;
 		float duracao = controladorJogo.duracaoAnimacaoCanvas;
@@ -516,7 +542,6 @@ public class Jogador : NetworkBehaviour
 
 			nowTime = DateTime.Now;
 			diff = nowTime - initialTime;
-
 		} while (diff.Milliseconds < timeout);
 
 		if (fail != null)
@@ -525,7 +550,7 @@ public class Jogador : NetworkBehaviour
 		yield return null;
 	}
 
-	IEnumerator GravarArduino()
+	private IEnumerator GravarArduino()
 	{
 		while (true)
 		{
@@ -539,7 +564,7 @@ public class Jogador : NetworkBehaviour
 		}
 	}
 
-	void OnApplicationQuit()
+	private void OnApplicationQuit()
 	{
 		if (arduino != null)
 			arduino.Close();

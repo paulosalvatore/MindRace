@@ -478,6 +478,8 @@ void IniciarPosicionamento()
 {
 	if (!posicionamentoIniciado)
 	{
+		Serial.println("p");
+
 		ProcessarPosicionamento(1);
 		posicionamentoIniciado = true;
 		AtualizarLedPosicionamento();
@@ -500,6 +502,8 @@ void EncerrarPosicionamento()
 {
 	if (posicionamentoIniciado)
 	{
+		Serial.println("p");
+
 		posicionamentoIniciado = false;
 		AtualizarLedPosicionamento();
 		ApagarLedVoltas();

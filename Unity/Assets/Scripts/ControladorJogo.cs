@@ -18,10 +18,19 @@ public class ControladorJogo : NetworkBehaviour
 	[Header("Corrida")]
 	public int numeroJogadoresNecessario;
 	public int voltasTotal;
-	[SyncVar] internal bool corridaIniciada;
-	[SyncVar] internal float tempoInicioCorrida;
-	[SyncVar] internal float tempoFinalCorrida;
-	[SyncVar] internal float tempoServidor;
+	public GameObject posicionamentoText;
+
+	[SyncVar]
+	internal bool corridaIniciada;
+
+	[SyncVar]
+	internal float tempoInicioCorrida;
+
+	[SyncVar]
+	internal float tempoFinalCorrida;
+
+	[SyncVar]
+	internal float tempoServidor;
 	internal List<Text> voltasTotalTextJogadores = new List<Text>();
 
 	[Header("Vencedor")]
@@ -32,33 +41,39 @@ public class ControladorJogo : NetworkBehaviour
 
 	[Header("Fade")]
 	public Animator fadeAnimator;
-	
-	[SyncVar] internal bool jogoIniciado;
-	[SyncVar] internal bool vencedorDeclarado;
-	[SyncVar] internal int vencedorCorrida;
+
+	[SyncVar]
+	internal bool jogoIniciado;
+
+	[SyncVar]
+	internal bool vencedorDeclarado;
+
+	[SyncVar]
+	internal int vencedorCorrida;
 
 	private ControladorConexoes controladorConexoes;
 
-	void Start()
+	private void Start()
 	{
-		//if (isServer)
-			fadeAnimator.SetTrigger("FadeIn");
+		fadeAnimator.SetTrigger("FadeIn");
 
 		controladorConexoes = ControladorConexoes.Pegar();
 		controladorConexoes.networkManagerHUD.showGUI = false;
-		
+
 		int voltasSelecionadas = controladorConexoes.voltasSelecionadas;
 		if (voltasSelecionadas > 0 && voltasSelecionadas != voltasTotal)
 			voltasTotal = voltasSelecionadas;
-		
+
 		vencedorAnimator = vencedorImage.GetComponent<Animator>();
 		AlterarExibicaoVencedor(false);
 
 		PegarPremioImageJogadores();
 		AtualizarVoltasTotalTextJogadores();
+
+		AlterarPosicionamento();
 	}
 
-	void Update()
+	private void Update()
 	{
 		if (isServer)
 			tempoServidor = Time.time;
@@ -77,7 +92,7 @@ public class ControladorJogo : NetworkBehaviour
 		}
 	}
 
-	void AtualizarVoltasTotalTextJogadores()
+	private void AtualizarVoltasTotalTextJogadores()
 	{
 		foreach (GameObject canvasJogador in canvasJogadores)
 		{
@@ -87,7 +102,7 @@ public class ControladorJogo : NetworkBehaviour
 		}
 	}
 
-	void PegarPremioImageJogadores()
+	private void PegarPremioImageJogadores()
 	{
 		foreach (GameObject canvasJogador in canvasJogadores)
 		{
@@ -98,7 +113,7 @@ public class ControladorJogo : NetworkBehaviour
 		}
 	}
 
-	void AtualizarVencedor()
+	private void AtualizarVencedor()
 	{
 		if (vencedorCorrida > 0)
 		{
@@ -126,7 +141,7 @@ public class ControladorJogo : NetworkBehaviour
 			vencedorImage.gameObject.SetActive(exibicao);
 	}
 
-	void IniciarJogo()
+	private void IniciarJogo()
 	{
 		jogoIniciado = true;
 
@@ -168,7 +183,7 @@ public class ControladorJogo : NetworkBehaviour
 		vencedorCorrida = vencedor;
 	}
 
-	void ChecarVencedorParcial()
+	private void ChecarVencedorParcial()
 	{
 		List<int> voltas = new List<int>();
 		foreach (GameObject jogador in jogadores)
@@ -183,6 +198,11 @@ public class ControladorJogo : NetworkBehaviour
 			vencedorCorrida = 2;
 		else if (voltas[0] == 0 && voltas[1] == 0)
 			vencedorCorrida = 0;
+	}
+
+	public void AlterarPosicionamento()
+	{
+		posicionamentoText.SetActive(!posicionamentoText.activeSelf);
 	}
 
 	static public ControladorJogo Pegar()
