@@ -1,31 +1,49 @@
-Initialize engine version: 5.5.0f3 (38b4efef76f0)
+Initialize engine version: 5.5.1f1 (88d00a7498cd)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
     Renderer: NVIDIA GeForce 930M (ID=0x1346)
     Vendor:   NVIDIA
     VRAM:     3072 MB
-    Driver:   21.21.13.6909
+    Driver:   22.21.13.8477
 Begin MonoManager ReloadAssembly
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
-Loading C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
-Loading C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\Jayrock.dll (this message is harmless)
-Loading C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\Jayrock.dll into Unity Child Domain
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\Jayrock.Json.dll (this message is harmless)
-Loading C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\Jayrock.Json.dll into Unity Child Domain
-- Completed reload, in  0.330 seconds
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\System.Core.dll (this message is harmless)
-Platform assembly: C:\Users\paulo\Desktop\Arquivos Antigos\Autorama\Unity\Autorama\Build\Build_Data\Managed\System.dll (this message is harmless)
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\Jayrock.dll (this message is harmless)
+Loading C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\Jayrock.dll into Unity Child Domain
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\Jayrock.Json.dll (this message is harmless)
+Loading C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\Jayrock.Json.dll into Unity Child Domain
+- Completed reload, in  0.035 seconds
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 2.185874 ms
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\System.Configuration.dll (this message is harmless)
+Platform assembly: C:\Users\paulo\Documents\GitHub\MindRace\Unity\Build\Build_Data\Managed\System.Xml.dll (this message is harmless)
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 28a0 -> priority: 1 
+<RI.Hid> Failed to create device file:
+ 20 O arquivo já está sendo usado por outro processo.
+
+ 
+(Filename:  Line: 54)
+
+<RI.Hid> Failed to create device file:
+ 20 O arquivo já está sendo usado por outro processo.
+
+ 
+(Filename:  Line: 54)
+
